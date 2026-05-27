@@ -478,8 +478,9 @@
         .ava-quote-drawer {
             position: fixed;
             top: 0;
-            right: -450px;
+            right: 0;
             width: 450px;
+            max-width: 100%;
             height: 100vh;
             background: rgba(8, 15, 28, 0.85);
             backdrop-filter: blur(35px) saturate(190%);
@@ -489,11 +490,12 @@
             z-index: 999999;
             display: flex;
             flex-direction: column;
+            transform: translate3d(100%, 0, 0);
             transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
             will-change: transform;
         }
         .ava-quote-drawer.ava-open {
-            transform: translate3d(-450px, 0, 0);
+            transform: translate3d(0, 0, 0);
         }
 
         /* Drawer Header */
@@ -866,14 +868,6 @@
 
         /* Mobile Responsiveness Rules */
         @media (max-width: 480px) {
-            .ava-quote-drawer {
-                width: 100vw;
-                right: -100vw;
-                border-left: none;
-            }
-            .ava-quote-drawer.ava-open {
-                transform: translate3d(-100vw, 0, 0);
-            }
             .ava-quote-launcher {
                 bottom: 95px;
                 right: 20px;
@@ -1351,6 +1345,36 @@
             overflow-x: hidden !important;
             scroll-behavior: smooth;
             -webkit-font-smoothing: antialiased;
+        }
+
+        /* Prevent horizontal overflow on Elementor parent containers and sections */
+        .e-con.e-parent,
+        .elementor-section {
+            overflow-x: clip !important;
+        }
+
+        /* Constrain dynamic ambient grids and mesh lights */
+        .ava-ambient-container,
+        .ava-ambient-grid {
+            max-width: 100% !important;
+            overflow: hidden !important;
+        }
+
+        /* Constrain background hero elements and glows */
+        .contact-hero {
+            overflow: hidden !important;
+        }
+        .hero-glow {
+            max-width: 100vw !important;
+            overflow: hidden !important;
+        }
+
+        /* Constrain carousels and sliders stage overflow */
+        .owl-carousel,
+        .owl-stage-outer,
+        .owl-stage {
+            max-width: 100% !important;
+            overflow: hidden !important;
         }
 
         /* 1. GPU-ACCELERATED COMPOSITOR LAYERS */
