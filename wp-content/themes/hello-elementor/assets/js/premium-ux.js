@@ -1336,9 +1336,32 @@
 
         // Sync initial UI
         updateUI();
-     } // <-- PROPERLY CLOSE initQuoteEngine()
+     }
 
     var RESPONSIVE_CSS = `
+        /* MOBILE-FIRST RESPONSIVE ARCHITECTURE SYSTEM */
+        :root {
+            /* Fluid Spacing System */
+            --ava-space-xs: clamp(0.5rem, 2vw, 0.75rem);
+            --ava-space-sm: clamp(0.75rem, 3vw, 1.25rem);
+            --ava-space-md: clamp(1.25rem, 4vw, 1.75rem);
+            --ava-space-lg: clamp(1.75rem, 5vw, 2.5rem);
+            --ava-space-xl: clamp(2.5rem, 6vw, 4rem);
+
+            /* Typography System */
+            --ava-font-h1: clamp(1.6rem, 7.5vw, 2.3rem);
+            --ava-font-h2: clamp(1.35rem, 5.5vw, 1.8rem);
+            --ava-font-h3: clamp(1.15rem, 4.5vw, 1.45rem);
+            --ava-font-body: clamp(0.9rem, 3vw, 1.05rem);
+            --ava-font-small: clamp(0.75rem, 2.5vw, 0.85rem);
+
+            /* Glassmorphism Presets */
+            --ava-glass-bg: rgba(8, 15, 28, 0.88);
+            --ava-glass-blur: 15px;
+            --ava-glass-border: rgba(120, 200, 255, 0.12);
+            --ava-glass-glow: rgba(64, 162, 216, 0.15);
+        }
+
         /* Prevent horizontal scroll globally */
         html, body {
             max-width: 100vw !important;
@@ -1347,10 +1370,11 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Prevent horizontal overflow on Elementor parent containers and sections */
+        /* Prevent horizontal overflow on parent layouts */
         .e-con.e-parent,
         .elementor-section {
             overflow-x: clip !important;
+            max-width: 100% !important;
         }
 
         /* Constrain dynamic ambient grids and mesh lights */
@@ -1400,7 +1424,7 @@
         .ava-empty-cart p, 
         select option,
         span.elementor-icon-list-text {
-            color: #cbd5e1 !important; /* Premium WCAG AA compliant text color */
+            color: #cbd5e1 !important;
         }
         
         .ava-cart-item-name,
@@ -1414,7 +1438,7 @@
             color: #ffffff !important;
         }
 
-        /* 4. EXPANDED TOUCH TARGET BINDINGS (Lighthouse Target) */
+        /* 4. EXPANDED TOUCH TARGET BINDINGS */
         .elementor-menu-toggle,
         .ava-drawer-close,
         .ava-qty-btn,
@@ -1508,33 +1532,21 @@
             text-shadow: 0 0 10px rgba(64, 162, 216, 0.35) !important;
             display: block !important;
         }
-        @media (max-width: 768px) {
-            .custom-site-logo .ava-nav-logo,
-            #off-canvas-1aa01af .elementor-element-3120d15 img {
-                max-height: 34px !important;
-            }
-            .custom-site-logo .ava-logo-text,
-            #off-canvas-1aa01af .elementor-element-3120d15 .ava-logo-text {
-                font-size: clamp(8px, 2.5vw, 9.5px) !important;
-                letter-spacing: 1px !important;
-                margin-top: 2px !important;
-            }
-        }
 
-        /* 7. DYNAMIC MOBILE HEADER RESPONSIVENESS & OVERLAP PREVENTION */
+        /* 7. DYNAMIC MOBILE HEADER RESPONSIVENESS & BRAND TEXT CONTAINMENT */
         @media (max-width: 1024px) {
             .elementor-location-header .elementor-element-3f472c7 {
-                padding: 8px 16px !important;
+                padding: 6px 16px !important;
                 display: flex !important;
                 flex-direction: row !important;
                 align-items: center !important;
                 justify-content: space-between !important;
                 flex-wrap: nowrap !important;
-                background: rgba(8, 15, 28, 0.85) !important;
-                backdrop-filter: blur(25px) saturate(180%) !important;
-                -webkit-backdrop-filter: blur(25px) saturate(180%) !important;
+                background: rgba(8, 15, 28, 0.9) !important;
+                backdrop-filter: blur(15px) saturate(160%) !important;
+                -webkit-backdrop-filter: blur(15px) saturate(160%) !important;
                 border-bottom: 1px solid rgba(120, 200, 255, 0.12) !important;
-                height: 70px !important;
+                height: 64px !important;
                 position: fixed !important;
                 top: 0 !important;
                 left: 0 !important;
@@ -1543,7 +1555,7 @@
             }
             
             body {
-                padding-top: 70px !important;
+                padding-top: 64px !important;
             }
 
             .elementor-location-header .elementor-element-3f472c7 > .e-con-inner,
@@ -1558,10 +1570,48 @@
                 height: 100% !important;
                 margin: 0 !important;
                 background: transparent !important;
-                backdrop-filter: none !important;
-                -webkit-backdrop-filter: none !important;
                 border: none !important;
                 position: static !important;
+            }
+
+            /* Logo properly aligned and contained */
+            .custom-site-logo,
+            .custom-site-logo .elementor-widget-container {
+                display: flex !important;
+                align-items: center !important;
+                justify-content: flex-start !important;
+                width: auto !important;
+                max-width: 60% !important;
+                margin: 0 !important;
+            }
+            .custom-site-logo a {
+                display: flex !important;
+                flex-direction: row !important;
+                align-items: center !important;
+                justify-content: flex-start !important;
+                gap: 8px !important;
+                text-decoration: none !important;
+                max-width: 100% !important;
+            }
+            .custom-site-logo .ava-nav-logo {
+                height: 32px !important;
+                width: auto !important;
+                object-fit: contain !important;
+                flex-shrink: 0 !important;
+            }
+            .custom-site-logo .ava-logo-text {
+                font-size: clamp(10px, 3vw, 13px) !important;
+                font-weight: 800 !important;
+                text-transform: uppercase !important;
+                letter-spacing: 0.5px !important;
+                color: #40A2D8 !important;
+                margin-top: 0 !important;
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+                text-shadow: 0 0 10px rgba(64, 162, 216, 0.35) !important;
+                display: block !important;
+                flex-shrink: 1 !important;
             }
 
             /* Single-product overlap prevention under fixed header */
@@ -1577,10 +1627,7 @@
             }
 
             .elementor-location-header .elementor-element-82f49ac {
-                width: auto !important;
-                flex: 0 0 auto !important;
-                margin: 0 !important;
-                padding: 0 !important;
+                display: none !important;
             }
             
             .elementor-location-header .elementor-element-5366156 {
@@ -1590,7 +1637,7 @@
                 flex-direction: row !important;
                 align-items: center !important;
                 justify-content: flex-end !important;
-                gap: 12px !important;
+                gap: 6px !important;
                 margin: 0 !important;
                 padding: 0 !important;
             }
@@ -1608,15 +1655,17 @@
                 padding: 0 !important;
             }
 
-            .elementor-element-defd4a6 a.elementor-icon {
+            .elementor-element-defd4a6 a.elementor-icon,
+            .elementor-menu-toggle {
                 display: flex !important;
                 align-items: center !important;
                 justify-content: center !important;
-                width: 48px !important;
-                height: 48px !important;
+                width: 44px !important;
+                height: 44px !important;
                 border-radius: 50% !important;
                 background: rgba(255, 255, 255, 0.05) !important;
                 border: 1px solid rgba(255, 255, 255, 0.1) !important;
+                color: #ffffff !important;
                 transition: all 0.3s ease !important;
             }
         }
@@ -1676,20 +1725,20 @@
         #off-canvas-1aa01af .e-off-canvas__main {
             position: absolute !important;
             top: 0 !important;
-            left: -320px !important;
-            width: 320px !important;
-            max-width: 85vw !important;
+            left: 0 !important;
+            width: 310px !important;
+            max-width: 80vw !important;
             height: 100vh !important;
-            background: rgba(8, 15, 28, 0.96) !important;
-            backdrop-filter: blur(35px) saturate(190%) !important;
-            -webkit-backdrop-filter: blur(35px) saturate(190%) !important;
-            border-right: 1px solid rgba(64, 162, 216, 0.25) !important;
+            background: var(--ava-glass-bg) !important;
+            backdrop-filter: var(--ava-glass-blur) saturate(180%) !important;
+            -webkit-backdrop-filter: var(--ava-glass-blur) saturate(180%) !important;
+            border-right: 1px solid var(--ava-glass-border) !important;
             box-shadow: 20px 0 60px rgba(0, 0, 0, 0.8) !important;
-            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
-            transform: translate3d(0, 0, 0) !important;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+            transform: translate3d(-100%, 0, 0) !important;
             z-index: 1000000 !important;
             overflow-y: auto !important;
-            padding: 30px 20px !important;
+            padding: 32px 20px !important;
             box-sizing: border-box !important;
             display: flex !important;
             flex-direction: column !important;
@@ -1697,7 +1746,7 @@
         }
 
         #off-canvas-1aa01af.e-off-canvas.ava-open .e-off-canvas__main {
-            transform: translate3d(320px, 0, 0) !important;
+            transform: translate3d(0, 0, 0) !important;
         }
 
         #off-canvas-1aa01af .e-off-canvas__main::before {
@@ -1713,8 +1762,8 @@
 
         #off-canvas-1aa01af .elementor-element-7fd8dd0 {
             position: absolute !important;
-            top: 15px !important;
-            right: 15px !important;
+            top: 16px !important;
+            right: 16px !important;
             z-index: 1000010 !important;
             margin: 0 !important;
         }
@@ -1735,13 +1784,13 @@
         #off-canvas-1aa01af .elementor-nav-menu--main {
             display: block !important;
             width: 100% !important;
-            margin-top: 40px !important;
+            margin-top: 30px !important;
         }
         
         #off-canvas-1aa01af ul.elementor-nav-menu {
             display: flex !important;
             flex-direction: column !important;
-            gap: 8px !important;
+            gap: 10px !important;
             padding: 0 !important;
             margin: 0 !important;
             list-style: none !important;
@@ -1751,13 +1800,13 @@
             display: block !important;
             padding: 12px 16px !important;
             color: #ffffff !important;
-            font-size: 16px !important;
+            font-size: 15px !important;
             font-weight: 600 !important;
             text-decoration: none !important;
             border-radius: 12px !important;
             background: rgba(255, 255, 255, 0.02) !important;
             border: 1px solid rgba(255, 255, 255, 0.04) !important;
-            transition: all 0.3s ease !important;
+            transition: all 0.25s ease !important;
         }
         
         #off-canvas-1aa01af ul.elementor-nav-menu a:hover,
@@ -1766,20 +1815,20 @@
             background: rgba(64, 162, 216, 0.12) !important;
             border-color: rgba(64, 162, 216, 0.35) !important;
             color: #40A2D8 !important;
-            box-shadow: 0 0 15px rgba(64, 162, 216, 0.1);
+            box-shadow: 0 0 12px rgba(64, 162, 216, 0.15) !important;
         }
         
         #off-canvas-1aa01af ul.sub-menu {
-            padding-left: 16px !important;
-            margin: 4px 0 8px 0 !important;
+            padding-left: 12px !important;
+            margin: 6px 0 6px 0 !important;
             display: flex !important;
             flex-direction: column !important;
-            gap: 6px !important;
+            gap: 8px !important;
             list-style: none !important;
         }
         
         #off-canvas-1aa01af ul.sub-menu a {
-            font-size: 14px !important;
+            font-size: 13.5px !important;
             font-weight: 500 !important;
             padding: 10px 14px !important;
             background: rgba(255, 255, 255, 0.01) !important;
@@ -1787,7 +1836,7 @@
 
         #off-canvas-1aa01af .elementor-element-84b6964 {
             width: 100% !important;
-            margin-top: 20px !important;
+            margin-top: 10px !important;
         }
         
         #off-canvas-1aa01af .bdt-search-input {
@@ -1840,6 +1889,8 @@
                 border-radius: 12px !important;
                 padding: 10px !important;
                 box-sizing: border-box !important;
+                overflow-x: auto !important;
+                -webkit-overflow-scrolling: touch !important;
             }
             .single-product table.shop_attributes tr {
                 display: flex !important;
@@ -1847,6 +1898,7 @@
                 align-items: center !important;
                 border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
                 padding: 6px 0 !important;
+                min-width: 300px !important;
             }
             .single-product table.shop_attributes tr:last-child {
                 border-bottom: none !important;
@@ -1858,7 +1910,9 @@
                 font-size: 13px !important;
                 box-sizing: border-box !important;
                 white-space: normal !important;
+                word-wrap: break-word !important;
                 word-break: break-word !important;
+                overflow-wrap: break-word !important;
             }
             .single-product table.shop_attributes th {
                 width: 45% !important;
@@ -1909,6 +1963,21 @@
             text-align: center !important;
         }
 
+        /* Custom menu quote button override */
+        .menu-item-quote-btn-injected .add-request-quote-button {
+            background: linear-gradient(135deg, #40A2D8, #4AA485) !important;
+            color: #ffffff !important;
+            border-radius: 30px !important;
+            padding: 12px 24px !important;
+            font-weight: 700 !important;
+            min-height: 48px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: 100% !important;
+            border: none !important;
+        }
+
         @media (max-width: 1024px) {
             /* GLASSMORPHIC MOBILE MENU BACKDROP */
             .ava-menu-backdrop {
@@ -1920,7 +1989,7 @@
                 background: rgba(4, 8, 16, 0.45);
                 backdrop-filter: blur(15px);
                 -webkit-backdrop-filter: blur(15px);
-                z-index: 99998 !important; /* Below header's 99999 stacking context */
+                z-index: 99998 !important;
                 opacity: 0;
                 pointer-events: none;
                 transition: opacity 0.4s ease;
@@ -1935,39 +2004,43 @@
         @media (max-width: 768px) {
             /* RESPONSIVE TYPOGRAPHY & CINEMATIC SCALING */
             h1, .elementor-heading-title.elementor-size-default, .elementor-heading-title {
-                font-size: clamp(1.5rem, 6.5vw, 2.2rem) !important;
+                font-size: var(--ava-font-h1) !important;
                 line-height: 1.25 !important;
                 letter-spacing: -0.5px !important;
+                text-align: center !important;
             }
             h2 {
-                font-size: clamp(1.3rem, 5.5vw, 1.8rem) !important;
+                font-size: var(--ava-font-h2) !important;
                 line-height: 1.3 !important;
                 letter-spacing: -0.3px !important;
+                text-align: center !important;
             }
             h3 {
-                font-size: clamp(1.15rem, 4.5vw, 1.4rem) !important;
+                font-size: var(--ava-font-h3) !important;
+                text-align: center !important;
             }
             
             .elementor-widget-text-editor, .elementor-text-editor {
-                font-size: clamp(0.9rem, 3.2vw, 1.05rem) !important;
+                font-size: var(--ava-font-body) !important;
                 line-height: 1.5 !important;
             }
-                  /* Spacing fixes - reduce massive padding (header excluded via override below) */
+            
+            /* Spacing fixes - reduce massive padding */
             .e-con.e-parent, 
             .elementor-section.elementor-top-section {
-                padding-top: clamp(20px, 5vw, 40px) !important;
-                padding-bottom: clamp(20px, 5vw, 40px) !important;
+                padding-top: var(--ava-space-md) !important;
+                padding-bottom: var(--ava-space-md) !important;
                 margin-top: 0 !important;
                 margin-bottom: 0 !important;
             }
             
-            /* Column stacking for content containers (header excluded via override below) */
+            /* Column stacking for content containers */
             .elementor-container,
             .e-con-inner,
             .e-con {
                 flex-direction: column !important;
-                padding-left: 16px !important;
-                padding-right: 16px !important;
+                padding-left: var(--ava-space-sm) !important;
+                padding-right: var(--ava-space-sm) !important;
                 box-sizing: border-box !important;
                 width: 100% !important;
             }
@@ -1986,9 +2059,12 @@
                 overflow: hidden !important;
                 height: auto !important;
                 min-height: unset !important;
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 12px !important;
             }
             
-            /* Prevents clipping and scroll inside loop cards */
+            /* Prevents clipping inside loop cards */
             .e-loop-item *, 
             .glowing-card *, 
             .swiper-slide * {
@@ -2001,6 +2077,7 @@
                 white-space: normal !important;
                 word-wrap: break-word !important;
                 overflow-wrap: break-word !important;
+                text-align: center !important;
             }
             
             /* Buttons Stacking inside Cards */
@@ -2010,10 +2087,10 @@
             .e-loop-item .button-container {
                 display: flex !important;
                 flex-direction: column !important;
-                gap: 12px !important;
+                gap: 10px !important;
                 align-items: center !important;
                 width: 100% !important;
-                margin-top: 15px !important;
+                margin-top: 12px !important;
             }
             
             /* Force buttons full width & no-clip text wrap */
@@ -2074,7 +2151,6 @@
                 width: 100% !important;
                 max-width: 100% !important;
                 margin-bottom: 20px !important;
-                float: none !important;
             }
             .single-product .summary {
                 width: 100% !important;
@@ -2096,6 +2172,42 @@
                 display: flex !important;
             }
 
+            /* ========== FOOTER RESPONSIVE STACKING ========== */
+            .elementor-location-footer .elementor-container,
+            .elementor-location-footer .e-con-inner,
+            .elementor-location-footer .e-con {
+                flex-direction: column !important;
+                align-items: center !important;
+                text-align: center !important;
+                gap: 20px !important;
+            }
+            .elementor-location-footer .elementor-element {
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 auto !important;
+                text-align: center !important;
+            }
+            .elementor-location-footer p,
+            .elementor-location-footer a,
+            .elementor-location-footer li,
+            .elementor-location-footer span {
+                text-align: center !important;
+            }
+
+            /* ========== MOBILE HERO REDUCED HEIGHT & CENTERING ========== */
+            .elementor-element-e532450,
+            .contact-hero,
+            .single-product .elementor-element-e35fc5d {
+                min-height: unset !important;
+                padding-top: 40px !important;
+                padding-bottom: 40px !important;
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                justify-content: center !important;
+                text-align: center !important;
+            }
+
             /* ========== HEADER PROTECTION (must be LAST to win cascade) ========== */
             .elementor-location-header .elementor-element-3f472c7 {
                 display: flex !important;
@@ -2103,8 +2215,8 @@
                 flex-wrap: nowrap !important;
                 align-items: center !important;
                 justify-content: space-between !important;
-                padding: 8px 16px !important;
-                height: 70px !important;
+                padding: 6px 16px !important;
+                height: 64px !important;
             }
             .elementor-location-header .elementor-element-3f472c7 > .e-con-inner,
             .elementor-location-header .elementor-element-3f472c7 > .elementor-container,

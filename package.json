@@ -17,6 +17,8 @@
     "@supabase/supabase-js": "^2.43.4",
     "express": "^4.21.2",
     "morgan": "^1.10.0",
-    "open": "^8.4.2"
+    "open": "^8.4.2",
+    "puppeteer": "^25.1.0",
+    "puppeteer-core": "^25.1.0"
   }
 }
