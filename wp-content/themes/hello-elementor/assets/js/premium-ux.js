@@ -1928,8 +1928,7 @@
                 font-size: clamp(0.9rem, 3.2vw, 1.05rem) !important;
                 line-height: 1.5 !important;
             }
-            
-            /* Spacing fixes - reduce massive padding */
+                  /* Spacing fixes - reduce massive padding (header excluded via override below) */
             .e-con.e-parent, 
             .elementor-section.elementor-top-section {
                 padding-top: clamp(20px, 5vw, 40px) !important;
@@ -1938,7 +1937,10 @@
                 margin-bottom: 0 !important;
             }
             
-            .elementor-container, .e-con-inner, .e-con {
+            /* Column stacking for content containers (header excluded via override below) */
+            .elementor-container,
+            .e-con-inner,
+            .e-con {
                 flex-direction: column !important;
                 padding-left: 16px !important;
                 padding-right: 16px !important;
@@ -2068,6 +2070,56 @@
                 text-align: center !important;
                 justify-content: center !important;
                 display: flex !important;
+            }
+
+            /* ========== HEADER PROTECTION (must be LAST to win cascade) ========== */
+            .elementor-location-header .elementor-element-3f472c7 {
+                display: flex !important;
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                padding: 8px 16px !important;
+                height: 70px !important;
+            }
+            .elementor-location-header .elementor-element-3f472c7 > .e-con-inner,
+            .elementor-location-header .elementor-element-3f472c7 > .elementor-container,
+            .elementor-location-header .elementor-element-3f472c7 > .elementor-element-82f49ac,
+            .elementor-location-header .elementor-element-3f472c7 > .elementor-element-5366156 {
+                display: flex !important;
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                padding: 0 !important;
+                width: auto !important;
+                height: auto !important;
+            }
+            .elementor-location-header .elementor-element-82f49ac {
+                flex: 0 0 auto !important;
+                width: auto !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            .elementor-location-header .elementor-element-5366156 {
+                flex: 0 0 auto !important;
+                width: auto !important;
+                display: flex !important;
+                flex-direction: row !important;
+                align-items: center !important;
+                gap: 8px !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            .elementor-location-header .elementor-element-83c9a4d,
+            .elementor-location-header .elementor-element-defd4a6 {
+                display: inline-flex !important;
+                width: auto !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            .elementor-location-header .elementor-nav-menu--main {
+                display: none !important;
             }
         }
     `;
@@ -2283,6 +2335,7 @@
         if (drawer) {
             drawer.classList.add('ava-open');
             drawer.setAttribute('aria-hidden', 'false');
+            drawer.removeAttribute('inert');
         }
         
         var toggles = document.querySelectorAll('.elementor-element-defd4a6 a.elementor-icon, .elementor-menu-toggle');
@@ -2306,6 +2359,7 @@
         if (drawer) {
             drawer.classList.remove('ava-open');
             drawer.setAttribute('aria-hidden', 'true');
+            drawer.setAttribute('inert', '');
         }
         
         var toggles = document.querySelectorAll('.elementor-element-defd4a6 a.elementor-icon, .elementor-menu-toggle');
