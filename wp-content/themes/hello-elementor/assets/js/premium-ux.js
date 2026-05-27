@@ -1336,10 +1336,284 @@
         updateUI();
     }
 
+    var RESPONSIVE_CSS = `
+        /* Prevent horizontal scroll globally */
+        html, body {
+            max-width: 100vw !important;
+            overflow-x: hidden !important;
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        @media (max-width: 1024px) {
+            /* 1. GLASSMORPHIC MOBILE MENU */
+            .elementor-nav-menu--dropdown {
+                position: fixed !important;
+                top: 0 !important;
+                right: -100vw !important;
+                width: 85vw !important;
+                max-width: 400px !important;
+                height: 100vh !important;
+                background: rgba(8, 15, 28, 0.90) !important;
+                backdrop-filter: blur(35px) saturate(180%) !important;
+                -webkit-backdrop-filter: blur(35px) saturate(180%) !important;
+                border-left: 1px solid rgba(64, 162, 216, 0.22) !important;
+                box-shadow: -20px 0 60px rgba(0, 0, 0, 0.7) !important;
+                z-index: 999999 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                padding: 90px 24px 40px 24px !important;
+                transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
+                box-sizing: border-box !important;
+                overflow-y: auto !important;
+            }
+            
+            body.ava-menu-active {
+                overflow: hidden !important; /* Disable body scroll when menu open */
+            }
+
+            body.ava-menu-active .elementor-nav-menu--dropdown {
+                transform: translate3d(-100vw, 0, 0) !important;
+            }
+            
+            /* Toggle classes */
+            .elementor-menu-toggle.elementor-active .elementor-menu-toggle__icon--open {
+                display: none !important;
+            }
+            .elementor-menu-toggle.elementor-active .elementor-menu-toggle__icon--close {
+                display: block !important;
+            }
+            
+            /* Glow Border indicator */
+            .elementor-nav-menu--dropdown::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 2px;
+                height: 100%;
+                background: linear-gradient(to bottom, #40A2D8, #4AA485);
+                box-shadow: 0 0 15px rgba(64, 162, 216, 0.6);
+            }
+            
+            .ava-menu-backdrop {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: rgba(4, 8, 16, 0.45);
+                backdrop-filter: blur(15px);
+                -webkit-backdrop-filter: blur(15px);
+                z-index: 999998;
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.4s ease;
+            }
+            
+            body.ava-menu-active .ava-menu-backdrop {
+                opacity: 1;
+                pointer-events: auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            /* 2. RESPONSIVE TYPOGRAPHY & CINEMATIC SCALING */
+            h1 {
+                font-size: clamp(2rem, 8vw, 2.8rem) !important;
+                line-height: 1.25 !important;
+                letter-spacing: -0.5px !important;
+            }
+            h2 {
+                font-size: clamp(1.5rem, 6vw, 2rem) !important;
+                line-height: 1.3 !important;
+                letter-spacing: -0.3px !important;
+            }
+            h3 {
+                font-size: clamp(1.25rem, 5vw, 1.5rem) !important;
+            }
+            
+            /* Spacing fixes - reduce massive padding */
+            .elementor-section, .section, section {
+                padding-top: 45px !important;
+                padding-bottom: 45px !important;
+            }
+            
+            .elementor-container, .e-con-inner, .e-con {
+                flex-direction: column !important;
+                padding-left: 16px !important;
+                padding-right: 16px !important;
+                box-sizing: border-box !important;
+                width: 100% !important;
+            }
+
+            /* 3. PRODUCT CARDS & LOOP GRIDS RESPONSIVENESS */
+            .elementor-element-cc6de85, 
+            .woocommerce ul.products li.product, 
+            .e-loop-item {
+                padding: 20px !important;
+                margin: 0 auto 20px auto !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                float: none !important;
+                box-sizing: border-box !important;
+            }
+            
+            /* Buttons Stacking inside Cards */
+            .elementor-element-cc6de85 .elementor-element-2b60bf0,
+            .elementor-element-cc6de85 .elementor-widget-container,
+            .woocommerce ul.products li.product .button-container,
+            .e-loop-item .button-container {
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 12px !important;
+                align-items: center !important;
+                width: 100% !important;
+                margin-top: 15px !important;
+            }
+            
+            /* Force buttons full width & no-clip text wrap */
+            .elementor-element-cc6de85 a.elementor-button,
+            .elementor-element-cc6de85 .add-request-quote-button,
+            .elementor-element-cc6de85 .ava-featured-quote-btn,
+            .woocommerce ul.products li.product .button,
+            .e-loop-item .button {
+                width: 100% !important;
+                max-width: 100% !important;
+                display: flex !important;
+                justify-content: center !important;
+                align-items: center !important;
+                box-sizing: border-box !important;
+                margin: 4px 0 !important;
+                padding: 12px 20px !important;
+                font-size: 13px !important;
+                white-space: normal !important;
+                text-align: center !important;
+                border-radius: 30px !important;
+                text-overflow: clip !important;
+                height: auto !important;
+            }
+
+            /* 4. CAROUSEL & SWIPER SPATIAL FIXES */
+            .swiper-button-prev,
+            .swiper-button-next {
+                width: 38px !important;
+                height: 38px !important;
+                background: rgba(8, 15, 28, 0.75) !important;
+                border: 1px solid rgba(64, 162, 216, 0.4) !important;
+                border-radius: 50% !important;
+                backdrop-filter: blur(8px) !important;
+                -webkit-backdrop-filter: blur(8px) !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                z-index: 100 !important;
+            }
+            
+            .swiper-button-prev { left: 4px !important; }
+            .swiper-button-next { right: 4px !important; }
+            .swiper-pagination { bottom: 6px !important; }
+
+            /* 5. PRODUCT DETAILS PAGE MOBILE FLOW */
+            .product-template-default .site-main .elementor-section,
+            .single-product .product {
+                display: flex !important;
+                flex-direction: column !important;
+                padding: 10px !important;
+            }
+            .single-product .woocommerce-product-gallery {
+                width: 100% !important;
+                max-width: 100% !important;
+                margin-bottom: 20px !important;
+                float: none !important;
+            }
+            .single-product .summary {
+                width: 100% !important;
+                float: none !important;
+                padding: 0 10px !important;
+                box-sizing: border-box !important;
+            }
+            .single-product .elementor-widget-yith-ywraq-button-quote,
+            .single-product .yith-ywraq-add-to-quote,
+            .single-product .add-request-quote-button {
+                width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            .single-product .add-request-quote-button {
+                padding: 14px 20px !important;
+                font-size: 15px !important;
+                text-align: center !important;
+                justify-content: center !important;
+                display: flex !important;
+            }
+        }
+    `;
+
+    function initResponsiveStyles() {
+        if (!document.getElementById('ava-responsive-styles')) {
+            var styleEl = document.createElement('style');
+            styleEl.id = 'ava-responsive-styles';
+            styleEl.innerHTML = RESPONSIVE_CSS;
+            document.head.appendChild(styleEl);
+        }
+    }
+
+    function initMobileMenuInterceptions() {
+        var toggles = document.querySelectorAll('.elementor-menu-toggle');
+        
+        // Add a backdrop if it doesn't exist
+        var backdrop = document.querySelector('.ava-menu-backdrop');
+        if (!backdrop) {
+            backdrop = document.createElement('div');
+            backdrop.className = 'ava-menu-backdrop';
+            document.body.appendChild(backdrop);
+            
+            // Clicking backdrop closes menu
+            backdrop.addEventListener('click', closeMobileMenu);
+        }
+
+        toggles.forEach(function (toggle) {
+            toggle.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                var isActive = document.body.classList.contains('ava-menu-active');
+                if (isActive) {
+                    closeMobileMenu();
+                } else {
+                    openMobileMenu();
+                }
+            });
+        });
+
+        // Close menu on link clicks
+        var links = document.querySelectorAll('.elementor-nav-menu--dropdown a, .e-off-canvas a');
+        links.forEach(function (link) {
+            link.addEventListener('click', closeMobileMenu);
+        });
+
+        function openMobileMenu() {
+            document.body.classList.add('ava-menu-active');
+            toggles.forEach(function (t) {
+                t.classList.add('elementor-active');
+                t.setAttribute('aria-expanded', 'true');
+            });
+        }
+
+        function closeMobileMenu() {
+            document.body.classList.remove('ava-menu-active');
+            toggles.forEach(function (t) {
+                t.classList.remove('elementor-active');
+                t.setAttribute('aria-expanded', 'false');
+            });
+        }
+    }
+
     /* ================================================================
        BOOTUX SPA INTERFACE CHOREOGRAPHY
        ================================================================ */
     function boot() {
+        try { initResponsiveStyles(); } catch (e) { console.warn('[AVA] Responsive Styles failed:', e); }
         try { initAtmosphere(); } catch (e) { console.warn('[AVA] Atmosphere failed:', e); }
         try { initSpatialTelemetry(); } catch (e) { console.warn('[AVA] Spatial Telemetry failed:', e); }
         try { initCardSpotlight(); } catch (e) { console.warn('[AVA] Spotlight failed:', e); }
@@ -1350,6 +1624,7 @@
         try { initMobileDropdownToggle(); } catch (e) { console.warn('[AVA] Mobile Dropdown failed:', e); }
         try { initProductCardClicks(); } catch (e) { console.warn('[AVA] Product Card Clicks failed:', e); }
         try { initQuoteEngine(); } catch (e) { console.warn('[AVA] Quote Engine failed:', e); }
+        try { initMobileMenuInterceptions(); } catch (e) { console.warn('[AVA] Mobile Menu failed:', e); }
 
         document.body.classList.add('ava-premium-loaded');
         setTimeout(forceRevealAll, 600);
