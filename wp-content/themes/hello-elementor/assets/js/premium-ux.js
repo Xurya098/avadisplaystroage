@@ -1497,7 +1497,7 @@
             }
         }
 
-        /* 7. DYNAMIC MOBILE HEADER RESPONSIVENESS */
+        /* 7. DYNAMIC MOBILE HEADER RESPONSIVENESS & OVERLAP PREVENTION */
         @media (max-width: 1024px) {
             .elementor-location-header .elementor-element-3f472c7 {
                 padding: 8px 16px !important;
@@ -1524,13 +1524,32 @@
 
             .elementor-location-header .elementor-element-3f472c7 > .e-con-inner,
             .elementor-location-header .elementor-element-3f472c7 > .elementor-container {
+                display: flex !important;
                 flex-direction: row !important;
                 align-items: center !important;
                 justify-content: space-between !important;
                 flex-wrap: nowrap !important;
                 padding: 0 !important;
                 width: 100% !important;
+                height: 100% !important;
                 margin: 0 !important;
+                background: transparent !important;
+                backdrop-filter: none !important;
+                -webkit-backdrop-filter: none !important;
+                border: none !important;
+                position: static !important;
+            }
+
+            /* Single-product overlap prevention under fixed header */
+            .single-product .elementor-section,
+            .single-product .e-con {
+                margin-top: 0 !important;
+            }
+            .single-product .elementor-element-b23f65f,
+            .single-product #breadcrumbs,
+            .single-product .woocommerce-breadcrumb {
+                margin-top: 15px !important;
+                padding-top: 10px !important;
             }
 
             .elementor-location-header .elementor-element-82f49ac {
@@ -1764,7 +1783,7 @@
             box-shadow: 0 0 10px rgba(64, 162, 216, 0.25) !important;
         }
 
-        /* 9. WOOCOMMERCE PRODUCT DETAILS AUTO-COLLAPSE EMPTY BLOCKS */
+        /* 9. WOOCOMMERCE PRODUCT DETAILS AUTO-COLLAPSE & SPECTABLE OVERRIDES */
         @media (max-width: 768px) {
             .single-product .e-n-tabs,
             .single-product .e-n-tabs-content,
@@ -1787,17 +1806,50 @@
                 box-sizing: border-box !important;
             }
             
-            .single-product .shop_attributes, 
             .single-product table.shop_attributes {
-                display: table !important;
+                display: block !important;
                 width: 100% !important;
-                margin: 0 0 20px 0 !important;
+                margin: 20px 0 !important;
+                border-collapse: collapse !important;
+                background: rgba(10, 18, 30, 0.4) !important;
+                border: 1px solid rgba(120, 200, 255, 0.1) !important;
+                border-radius: 12px !important;
+                padding: 10px !important;
                 box-sizing: border-box !important;
+            }
+            .single-product table.shop_attributes tr {
+                display: flex !important;
+                justify-content: space-between !important;
+                align-items: center !important;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+                padding: 6px 0 !important;
+            }
+            .single-product table.shop_attributes tr:last-child {
+                border-bottom: none !important;
             }
             .single-product table.shop_attributes th,
             .single-product table.shop_attributes td {
+                display: inline-block !important;
                 padding: 10px 8px !important;
-                font-size: 12.5px !important;
+                font-size: 13px !important;
+                box-sizing: border-box !important;
+                white-space: normal !important;
+                word-break: break-word !important;
+            }
+            .single-product table.shop_attributes th {
+                width: 45% !important;
+                text-align: left !important;
+                color: rgba(255, 255, 255, 0.6) !important;
+                font-weight: 600 !important;
+                background: transparent !important;
+                border: none !important;
+            }
+            .single-product table.shop_attributes td {
+                width: 55% !important;
+                text-align: right !important;
+                color: #ffffff !important;
+                font-weight: 500 !important;
+                border: none !important;
             }
         }
 
@@ -1844,7 +1896,7 @@
                 background: rgba(4, 8, 16, 0.45);
                 backdrop-filter: blur(15px);
                 -webkit-backdrop-filter: blur(15px);
-                z-index: 999998;
+                z-index: 99998 !important; /* Below header's 99999 stacking context */
                 opacity: 0;
                 pointer-events: none;
                 transition: opacity 0.4s ease;
@@ -1908,6 +1960,21 @@
                 overflow: hidden !important;
                 height: auto !important;
                 min-height: unset !important;
+            }
+            
+            /* Prevents clipping and scroll inside loop cards */
+            .e-loop-item *, 
+            .glowing-card *, 
+            .swiper-slide * {
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            .e-loop-item h2, .e-loop-item h3, .e-loop-item h4,
+            .woocommerce ul.products li.product h2, .woocommerce ul.products li.product h3,
+            .glowing-card h2, .glowing-card h3 {
+                white-space: normal !important;
+                word-wrap: break-word !important;
+                overflow-wrap: break-word !important;
             }
             
             /* Buttons Stacking inside Cards */
