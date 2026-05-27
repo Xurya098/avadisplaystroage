@@ -1,0 +1,64 @@
+.elementor-275 .elementor-element.elementor-element-5310865{--display:flex;--min-height:90vh;--flex-direction:column;--container-widget-width:calc( ( 1 - var( --container-widget-flex-grow ) ) * 100% );--container-widget-height:initial;--container-widget-flex-grow:0;--container-widget-align-self:initial;--flex-wrap-mobile:wrap;--justify-content:center;--align-items:center;--margin-top:0px;--margin-bottom:0px;--margin-left:0px;--margin-right:0px;--padding-top:0px;--padding-bottom:0px;--padding-left:20px;--padding-right:20px;}.elementor-275 .elementor-element.elementor-element-5310865:not(.elementor-motion-effects-element-type-background), .elementor-275 .elementor-element.elementor-element-5310865 > .elementor-motion-effects-container > .elementor-motion-effects-layer{background-image:url("/wp-content/uploads/2025/05/Map-Bg.webp");background-position:center center;background-repeat:no-repeat;background-size:cover;}.elementor-widget-heading .elementor-heading-title{font-family:var( --e-global-typography-primary-font-family ), Sans-serif;font-weight:var( --e-global-typography-primary-font-weight );}.elementor-275 .elementor-element.elementor-element-d25ca2b .elementor-heading-title{font-family:"Outfit", Sans-serif;font-size:clamp(2.75rem, 5vw, 3.875rem);font-weight:700;text-transform:capitalize;line-height:1.2em;color:var( --e-global-color-fc53237 );}.elementor-widget-text-editor{font-family:var( --e-global-typography-text-font-family ), Sans-serif;font-size:var( --e-global-typography-text-font-size );font-weight:var( --e-global-typography-text-font-weight );line-height:var( --e-global-typography-text-line-height );}.elementor-275 .elementor-element.elementor-element-bd76583{width:var( --container-widget-width, 60% );max-width:60%;--container-widget-width:60%;--container-widget-flex-grow:0;text-align:center;color:var( --e-global-color-fc53237 );}.elementor-275 .elementor-element.elementor-element-bd76583.elementor-element{--align-self:center;}.elementor-widget-button .elementor-button{font-family:var( --e-global-typography-accent-font-family ), Sans-serif;font-weight:var( --e-global-typography-accent-font-weight );}.elementor-275 .elementor-element.elementor-element-0dd0cfd .elementor-button{background-color:#02010100;font-family:var( --e-global-typography-76f06c5-font-family ), Sans-serif;font-size:var( --e-global-typography-76f06c5-font-size );font-weight:var( --e-global-typography-76f06c5-font-weight );line-height:var( --e-global-typography-76f06c5-line-height );border-style:solid;border-width:2px 2px 2px 2px;border-color:var( --e-global-color-117e479 );border-radius:100px 100px 100px 100px;padding:15px 30px 15px 30px;}.elementor-275 .elementor-element.elementor-element-0dd0cfd .elementor-button:hover, .elementor-275 .elementor-element.elementor-element-0dd0cfd .elementor-button:focus{background-color:var( --e-global-color-117e479 );}.elementor-275 .elementor-element.elementor-element-0dd0cfd .elementor-button-content-wrapper{flex-direction:row;}.elementor-275 .elementor-element.elementor-element-0dd0cfd .elementor-button .elementor-button-content-wrapper{gap:20px;}.elementor-widget .tippy-tooltip .tippy-content{text-align:center;}@media(max-width:1024px){.elementor-275 .elementor-element.elementor-element-5310865{--min-height:80vh;}.elementor-widget-text-editor{font-size:var( --e-global-typography-text-font-size );line-height:var( --e-global-typography-text-line-height );}.elementor-275 .elementor-element.elementor-element-bd76583{width:100%;max-width:100%;}.elementor-275 .elementor-element.elementor-element-0dd0cfd .elementor-button{font-size:var( --e-global-typography-76f06c5-font-size );line-height:var( --e-global-typography-76f06c5-line-height );}}@media(max-width:767px){.elementor-275 .elementor-element.elementor-element-5310865{--min-height:70vh;}.elementor-widget-text-editor{font-size:var( --e-global-typography-text-font-size );line-height:var( --e-global-typography-text-line-height );}.elementor-275 .elementor-element.elementor-element-0dd0cfd .elementor-button{font-size:var( --e-global-typography-76f06c5-font-size );line-height:var( --e-global-typography-76f06c5-line-height );}}/* Start Custom Fonts CSS */@font-face {
+	font-family: 'Outfit';
+	font-style: normal;
+	font-weight: 100;
+	font-display: auto;
+	src: url('/wp-content/uploads/2025/06/Outfit-Thin.ttf') format('truetype');
+}
+@font-face {
+	font-family: 'Outfit';
+	font-style: normal;
+	font-weight: 300;
+	font-display: auto;
+	src: url('/wp-content/uploads/2025/06/Outfit-Light.ttf') format('truetype');
+}
+@font-face {
+	font-family: 'Outfit';
+	font-style: normal;
+	font-weight: normal;
+	font-display: auto;
+	src: url('/wp-content/uploads/2025/06/Outfit-Regular.ttf') format('truetype');
+}
+@font-face {
+	font-family: 'Outfit';
+	font-style: normal;
+	font-weight: 200;
+	font-display: auto;
+	src: url('/wp-content/uploads/2025/06/Outfit-ExtraLight.ttf') format('truetype');
+}
+@font-face {
+	font-family: 'Outfit';
+	font-style: normal;
+	font-weight: 500;
+	font-display: auto;
+	src: url('/wp-content/uploads/2025/06/Outfit-Medium.ttf') format('truetype');
+}
+@font-face {
+	font-family: 'Outfit';
+	font-style: normal;
+	font-weight: 600;
+	font-display: auto;
+	src: url('/wp-content/uploads/2025/06/Outfit-SemiBold.ttf') format('truetype');
+}
+@font-face {
+	font-family: 'Outfit';
+	font-style: normal;
+	font-weight: 700;
+	font-display: auto;
+	src: url('/wp-content/uploads/2025/06/Outfit-Bold.ttf') format('truetype');
+}
+@font-face {
+	font-family: 'Outfit';
+	font-style: normal;
+	font-weight: 800;
+	font-display: auto;
+	src: url('/wp-content/uploads/2025/06/Outfit-ExtraBold.ttf') format('truetype');
+}
+@font-face {
+	font-family: 'Outfit';
+	font-style: normal;
+	font-weight: 900;
+	font-display: auto;
+	src: url('/wp-content/uploads/2025/06/Outfit-Black.ttf') format('truetype');
+}
+/* End Custom Fonts CSS */

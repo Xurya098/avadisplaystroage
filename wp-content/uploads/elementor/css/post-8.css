@@ -1,0 +1,306 @@
+.elementor-kit-8 {
+    --e-global-color-117e479: #40A2D8;
+    --e-global-color-2113524: #1A1A1A;
+    --e-global-color-4a0af8f: #F68A0A;
+    --e-global-color-e94b350: #F4F4F4;
+    --e-global-color-03a17f4: #282828;
+    --e-global-color-17dfd5f: #6C6B69;
+    --e-global-color-fc53237: #FFFFFF;
+    --e-global-color-05a8d07: #1F1F1F;
+    --e-global-color-7d58e8a: #333333;
+    --e-global-typography-text-font-family: "Outfit";
+    --e-global-typography-text-font-size: clamp(0.875rem, 1.2vw, 1.125rem);
+    --e-global-typography-text-font-weight: 400;
+    --e-global-typography-text-line-height: 1.2em;
+    --e-global-typography-f746e28-font-family: "Outfit";
+    --e-global-typography-f746e28-font-size: clamp(2.75rem, 5vw, 3.875rem);
+    --e-global-typography-f746e28-font-weight: 700;
+    --e-global-typography-f746e28-line-height: 1.2em;
+    --e-global-typography-580b703-font-family: "Outfit";
+    --e-global-typography-580b703-font-size: clamp(2.375rem, 4vw, 3.125rem);
+    --e-global-typography-580b703-font-weight: 700;
+    --e-global-typography-580b703-line-height: 1.2em;
+    --e-global-typography-77819bb-font-family: "Outfit";
+    --e-global-typography-77819bb-font-size: clamp(1.875rem, 3.5vw, 2.5rem);
+    --e-global-typography-77819bb-font-weight: 700;
+    --e-global-typography-77819bb-line-height: 1.2em;
+    --e-global-typography-c65477d-font-family: "Outfit";
+    --e-global-typography-c65477d-font-size: clamp(1.5rem, 2.5vw, 2rem);
+    --e-global-typography-c65477d-font-weight: 600;
+    --e-global-typography-c65477d-line-height: 1.2em;
+    --e-global-typography-2601c12-font-family: "Outfit";
+    --e-global-typography-2601c12-font-size: clamp(1.25rem, 2vw, 1.625rem);
+    --e-global-typography-2601c12-font-weight: 600;
+    --e-global-typography-2601c12-line-height: 1.2em;
+    --e-global-typography-7fbe373-font-family: "Outfit";
+    --e-global-typography-7fbe373-font-size: clamp(1rem, 1.5vw, 1.25rem);
+    --e-global-typography-7fbe373-font-weight: 600;
+    --e-global-typography-7fbe373-line-height: 1.2em;
+    --e-global-typography-76f06c5-font-family: "Outfit";
+    --e-global-typography-76f06c5-font-size: clamp(0.875rem, 1.2vw, 1.125rem);
+    --e-global-typography-76f06c5-font-weight: 400;
+    --e-global-typography-76f06c5-line-height: 1.2em;
+    --e-global-typography-ed04e3c-font-family: "Outfit";
+    --e-global-typography-ed04e3c-font-size: clamp(0.625rem, 1vw, 1rem);
+    --e-global-typography-ed04e3c-font-weight: 400;
+    --e-global-typography-ed04e3c-line-height: 1.2em;
+    color: var( --e-global-color-17dfd5f);
+    font-family: var( --e-global-typography-76f06c5-font-family), Sans-serif;
+    font-size: var( --e-global-typography-76f06c5-font-size);
+    font-weight: var( --e-global-typography-76f06c5-font-weight);
+    line-height: var( --e-global-typography-76f06c5-line-height);
+}
+
+.elementor-kit-8 e-page-transition {
+    background-color: #FFBC7D;
+}
+
+.elementor-kit-8 a {
+    font-family: var( --e-global-typography-accent-font-family), Sans-serif;
+    font-weight: var( --e-global-typography-accent-font-weight);
+}
+
+.elementor-kit-8 h1 {
+    font-family: var( --e-global-typography-f746e28-font-family), Sans-serif;
+    font-size: var( --e-global-typography-f746e28-font-size);
+    font-weight: var( --e-global-typography-f746e28-font-weight);
+    line-height: var( --e-global-typography-f746e28-line-height);
+}
+
+.elementor-kit-8 h2 {
+    font-family: var( --e-global-typography-580b703-font-family), Sans-serif;
+    font-size: var( --e-global-typography-580b703-font-size);
+    font-weight: var( --e-global-typography-580b703-font-weight);
+    line-height: var( --e-global-typography-580b703-line-height);
+}
+
+.elementor-kit-8 h3 {
+    font-family: var( --e-global-typography-77819bb-font-family), Sans-serif;
+    font-size: var( --e-global-typography-77819bb-font-size);
+    font-weight: var( --e-global-typography-77819bb-font-weight);
+    line-height: var( --e-global-typography-77819bb-line-height);
+}
+
+.elementor-kit-8 h4 {
+    font-family: var( --e-global-typography-c65477d-font-family), Sans-serif;
+    font-size: var( --e-global-typography-c65477d-font-size);
+    font-weight: var( --e-global-typography-c65477d-font-weight);
+    line-height: var( --e-global-typography-c65477d-line-height);
+}
+
+.elementor-kit-8 h5 {
+    font-family: var( --e-global-typography-2601c12-font-family), Sans-serif;
+    font-size: var( --e-global-typography-2601c12-font-size);
+    font-weight: var( --e-global-typography-2601c12-font-weight);
+    line-height: var( --e-global-typography-2601c12-line-height);
+}
+
+.elementor-kit-8 h6 {
+    font-family: var( --e-global-typography-7fbe373-font-family), Sans-serif;
+    font-size: var( --e-global-typography-7fbe373-font-size);
+    font-weight: var( --e-global-typography-7fbe373-font-weight);
+    line-height: var( --e-global-typography-7fbe373-line-height);
+}
+
+.elementor-section.elementor-section-boxed>.elementor-container {
+    max-width: 1440px;
+}
+
+.e-con {
+    --container-max-width: 1440px;
+}
+
+.elementor-widget:not(:last-child) {
+    --kit-widget-spacing: 20px;
+}
+
+.elementor-element {
+    --widgets-spacing: 20px 20px;
+    --widgets-spacing-row: 20px;
+    --widgets-spacing-column: 20px;
+}
+
+{}
+
+h1.entry-title {
+    display: var(--page-title-display);
+}
+
+.site-header .site-branding {
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.site-header {
+    padding-inline-end: 0px;
+    padding-inline-start: 0px;
+}
+
+.site-footer .site-branding {
+    flex-direction: column;
+    align-items: stretch;
+}
+
+@media(max-width:1024px) {
+    .elementor-kit-8 {
+        font-size: var( --e-global-typography-76f06c5-font-size);
+        line-height: var( --e-global-typography-76f06c5-line-height);
+    }
+    .elementor-kit-8 h1 {
+        font-size: var( --e-global-typography-f746e28-font-size);
+        line-height: var( --e-global-typography-f746e28-line-height);
+    }
+    .elementor-kit-8 h2 {
+        font-size: var( --e-global-typography-580b703-font-size);
+        line-height: var( --e-global-typography-580b703-line-height);
+    }
+    .elementor-kit-8 h3 {
+        font-size: var( --e-global-typography-77819bb-font-size);
+        line-height: var( --e-global-typography-77819bb-line-height);
+    }
+    .elementor-kit-8 h4 {
+        font-size: var( --e-global-typography-c65477d-font-size);
+        line-height: var( --e-global-typography-c65477d-line-height);
+    }
+    .elementor-kit-8 h5 {
+        font-size: var( --e-global-typography-2601c12-font-size);
+        line-height: var( --e-global-typography-2601c12-line-height);
+    }
+    .elementor-kit-8 h6 {
+        font-size: var( --e-global-typography-7fbe373-font-size);
+        line-height: var( --e-global-typography-7fbe373-line-height);
+    }
+    .elementor-section.elementor-section-boxed>.elementor-container {
+        max-width: 1024px;
+    }
+    .e-con {
+        --container-max-width: 1024px;
+    }
+}
+
+@media(max-width:767px) {
+    .elementor-kit-8 {
+        font-size: var( --e-global-typography-76f06c5-font-size);
+        line-height: var( --e-global-typography-76f06c5-line-height);
+    }
+    .elementor-kit-8 h1 {
+        font-size: var( --e-global-typography-f746e28-font-size);
+        line-height: var( --e-global-typography-f746e28-line-height);
+    }
+    .elementor-kit-8 h2 {
+        font-size: var( --e-global-typography-580b703-font-size);
+        line-height: var( --e-global-typography-580b703-line-height);
+    }
+    .elementor-kit-8 h3 {
+        font-size: var( --e-global-typography-77819bb-font-size);
+        line-height: var( --e-global-typography-77819bb-line-height);
+    }
+    .elementor-kit-8 h4 {
+        font-size: var( --e-global-typography-c65477d-font-size);
+        line-height: var( --e-global-typography-c65477d-line-height);
+    }
+    .elementor-kit-8 h5 {
+        font-size: var( --e-global-typography-2601c12-font-size);
+        line-height: var( --e-global-typography-2601c12-line-height);
+    }
+    .elementor-kit-8 h6 {
+        font-size: var( --e-global-typography-7fbe373-font-size);
+        line-height: var( --e-global-typography-7fbe373-line-height);
+    }
+    .elementor-section.elementor-section-boxed>.elementor-container {
+        max-width: 767px;
+    }
+    .e-con {
+        --container-max-width: 767px;
+    }
+}
+
+/* Start custom CSS */
+
+html,
+body {
+    overflow-x: hidden;
+    width: 100%;
+}
+
+.grecaptcha-badge {
+    visibility: hidden !important;
+}
+
+/* End custom CSS */
+
+/* Start Custom Fonts CSS */
+
+@font-face {
+    font-family: 'Outfit';
+    font-style: normal;
+    font-weight: 100;
+    font-display: auto;
+    src: url('/wp-content/uploads/2025/06/Outfit-Thin.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Outfit';
+    font-style: normal;
+    font-weight: 300;
+    font-display: auto;
+    src: url('/wp-content/uploads/2025/06/Outfit-Light.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Outfit';
+    font-style: normal;
+    font-weight: normal;
+    font-display: auto;
+    src: url('/wp-content/uploads/2025/06/Outfit-Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Outfit';
+    font-style: normal;
+    font-weight: 200;
+    font-display: auto;
+    src: url('/wp-content/uploads/2025/06/Outfit-ExtraLight.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Outfit';
+    font-style: normal;
+    font-weight: 500;
+    font-display: auto;
+    src: url('/wp-content/uploads/2025/06/Outfit-Medium.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Outfit';
+    font-style: normal;
+    font-weight: 600;
+    font-display: auto;
+    src: url('/wp-content/uploads/2025/06/Outfit-SemiBold.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Outfit';
+    font-style: normal;
+    font-weight: 700;
+    font-display: auto;
+    src: url('/wp-content/uploads/2025/06/Outfit-Bold.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Outfit';
+    font-style: normal;
+    font-weight: 800;
+    font-display: auto;
+    src: url('/wp-content/uploads/2025/06/Outfit-ExtraBold.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Outfit';
+    font-style: normal;
+    font-weight: 900;
+    font-display: auto;
+    src: url('/wp-content/uploads/2025/06/Outfit-Black.ttf') format('truetype');
+}
+
+/* End Custom Fonts CSS */

@@ -1,0 +1,22 @@
+{
+  "name": "AVA DISPLAY AND STORAGE PTE. LTD.-local",
+  "version": "1.0.0",
+  "description": "Local development server for the AVA DISPLAY AND STORAGE PTE. LTD. website.",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "AVA DISPLAY AND STORAGE PTE. LTD.",
+    "wordpress",
+    "local-server"
+  ],
+  "author": "Antigravity",
+  "license": "ISC",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.43.4",
+    "express": "^4.21.2",
+    "morgan": "^1.10.0",
+    "open": "^8.4.2"
+  }
+}

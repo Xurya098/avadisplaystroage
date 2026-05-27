@@ -1,0 +1,98 @@
+.elementor-1265 .elementor-element.elementor-element-21cb37d5{--display:flex;--margin-top:0px;--margin-bottom:0px;--margin-left:0px;--margin-right:0px;--padding-top:0px;--padding-bottom:0px;--padding-left:0px;--padding-right:0px;}.elementor-widget-text-editor{font-family:var( --e-global-typography-text-font-family ), Sans-serif;font-size:var( --e-global-typography-text-font-size );font-weight:var( --e-global-typography-text-font-weight );line-height:var( --e-global-typography-text-line-height );}.elementor-widget .tippy-tooltip .tippy-content{text-align:center;}@media(max-width:1024px){.elementor-widget-text-editor{font-size:var( --e-global-typography-text-font-size );line-height:var( --e-global-typography-text-line-height );}}@media(max-width:767px){.elementor-widget-text-editor{font-size:var( --e-global-typography-text-font-size );line-height:var( --e-global-typography-text-line-height );}}/* Start custom CSS for text-editor, class: .elementor-element-22333439 */a {
+    background-color: transparent;
+    text-decoration: none;
+    color: #000000;
+}
+
+a.title-link {
+    font-weight: 700;
+    font-size: 1.2em;
+    color: #40A2D8;
+}
+
+a.title-link:hover {
+    color: #F68A0A;
+}
+
+.wpb_wmca_accordion_wrapper_theme_dark > ul > li > a {
+    background: #40A2D8;
+    color: #f5f5f5 !important;
+}
+
+.wpb_wmca_accordion_wrapper_theme_dark > ul > li > a:hover,
+.wpb_wmca_accordion_wrapper_theme_dark > ul > li > a:active,
+.wpb_wmca_accordion_wrapper_theme_dark > ul > li.current_page_ancestor > a,
+.wpb_wmca_accordion_wrapper_theme_dark > ul > li.current_page_parent > a,
+.wpb_wmca_accordion_wrapper_theme_dark > ul > li.current_page_item > a,
+.wpb_wmca_accordion_wrapper_theme_dark > ul > li.current-menu-parent > a,
+.wpb_wmca_accordion_wrapper_theme_dark > ul > li.current-menu-ancestor > a,
+.wpb_wmca_accordion_wrapper_theme_dark > ul > li.current-menu-item > a,
+.wpb_wmca_accordion_wrapper_theme_dark > ul > li.current-cat > a,
+.wpb_wmca_accordion_wrapper_theme_dark > ul > li.wpb-wmca-current-cat-parent > a,
+.wpb_wmca_accordion_wrapper_theme_dark > ul > li.wpb-submenu-indicator-minus > a {
+    background-color: #F68A0A;
+    color: #fff !important;
+}
+
+.wpb_wmca_accordion_wrapper_theme_dark > ul > li li > a {
+    border-left: 6px solid transparent;
+}
+
+.wpb_wmca_accordion_wrapper_theme_dark > ul > li li > a:hover,
+.wpb_wmca_accordion_wrapper_theme_dark > ul > li li > a:active {
+    border-left: 6px solid #F68A0A;
+}
+
+.wpb_category_n_menu_accordion ul li > a > span.wpb-submenu-indicator {
+    position: absolute;
+    right: 0;
+    width: 47px;
+    height: 100%;
+    top: 0;
+    text-align: center;
+    font-size: 30px;
+    font-weight: bolder;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    -o-transition: transform .3s linear;
+    -moz-transition: transform .3s linear;
+    -webkit-transition: transform .3s linear;
+    -ms-transition: transform .3s linear;
+    transition: transform .3s linear;
+}
+
+:where(body:not(.woocommerce-block-theme-has-button-styles)) .woocommerce #respond input#submit,
+:where(body:not(.woocommerce-block-theme-has-button-styles)) .woocommerce a.button,
+:where(body:not(.woocommerce-block-theme-has-button-styles)) .woocommerce button.button,
+:where(body:not(.woocommerce-block-theme-has-button-styles)) .woocommerce input.button {
+    font-size: 100%;
+    margin: 0;
+    line-height: 1;
+    cursor: pointer;
+    position: relative;
+    text-decoration: none;
+    overflow: visible;
+    padding: .618em 1em;
+    font-weight: 700;
+    border-radius: 100px;
+    left: auto;
+    color: #ffffff;
+    background-color: #40A2D8;
+    border: 0;
+    display: inline-block;
+    background-image: none;
+    box-shadow: none;
+    text-shadow: none;
+    font-family: outfit;
+    font-weight: 500;
+}
+
+:where(body:not(.woocommerce-block-theme-has-button-styles)) .woocommerce #respond input#submit:hover,
+:where(body:not(.woocommerce-block-theme-has-button-styles)) .woocommerce a.button:hover,
+:where(body:not(.woocommerce-block-theme-has-button-styles)) .woocommerce button.button:hover,
+:where(body:not(.woocommerce-block-theme-has-button-styles)) .woocommerce input.button:hover {
+    background-color: #F68A0A;
+    color: #FFF;
+}/* End custom CSS */
