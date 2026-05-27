@@ -152,7 +152,11 @@
                 cancelAnimationFrame(animationFrameId);
             }
             
-            panel.setPointerCapture(e.pointerId);
+            try {
+                panel.setPointerCapture(e.pointerId);
+            } catch (err) {
+                console.warn('[AVA] setPointerCapture failed:', err);
+            }
         });
 
         panel.addEventListener('pointermove', function (e) {
@@ -187,7 +191,11 @@
             if (!isDragging) return;
             isDragging = false;
             panel.style.cursor = 'grab';
-            panel.releasePointerCapture(e.pointerId);
+            try {
+                panel.releasePointerCapture(e.pointerId);
+            } catch (err) {
+                console.warn('[AVA] releasePointerCapture failed:', err);
+            }
             
             startMomentumAndSnap();
         });
@@ -2007,122 +2015,131 @@
     }
 
     function restructureMobileMenuDOM() {
-        var mobileMenu = document.querySelector('#menu-1-ba8a81e');
-        if (!mobileMenu) return;
-        
-        // Check if we already restructured it
-        if (mobileMenu.querySelector('.menu-item-services-dropdown')) return;
-        
-        // Get the flat items we want to group
-        var afterSalesLi = mobileMenu.querySelector('li.menu-item-339');
-        var designLi = mobileMenu.querySelector('li.menu-item-341');
-        var technicalLi = mobileMenu.querySelector('li.menu-item-344');
-        
-        if (!afterSalesLi && !designLi && !technicalLi) return;
-        
-        // Create the Services parent menu item
-        var servicesLi = document.createElement('li');
-        servicesLi.className = 'menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-services-dropdown';
-        
-        var servicesA = document.createElement('a');
-        servicesA.href = '#';
-        servicesA.className = 'elementor-item elementor-item-anchor';
-        servicesA.innerHTML = 'Services <span class="sub-menu-toggle-icon" style="font-size:9px; margin-left:4px;">▼</span>';
-        servicesLi.appendChild(servicesA);
-        
-        var subMenuUl = document.createElement('ul');
-        subMenuUl.className = 'sub-menu';
-        subMenuUl.style.display = 'none';
-        subMenuUl.style.paddingLeft = '15px';
-        subMenuUl.style.marginTop = '5px';
-        subMenuUl.style.listStyle = 'none';
-        
-        // Move the items into the submenu
-        if (designLi) {
-            subMenuUl.appendChild(designLi);
-        }
-        if (afterSalesLi) {
-            subMenuUl.appendChild(afterSalesLi);
-        }
-        if (technicalLi) {
-            subMenuUl.appendChild(technicalLi);
-        }
-        
-        servicesLi.appendChild(subMenuUl);
-        
-        // Insert Services parent item before the first service item (designLi or afterSalesLi)
-        var insertBeforeLi = designLi || afterSalesLi || technicalLi;
-        mobileMenu.insertBefore(servicesLi, insertBeforeLi);
-        
-        // Add accordion click toggle logic
-        servicesA.addEventListener('click', function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-            var isOpen = subMenuUl.style.display === 'block';
-            subMenuUl.style.display = isOpen ? 'none' : 'block';
-            servicesA.querySelector('.sub-menu-toggle-icon').innerHTML = isOpen ? '▼' : '▲';
+        var mobileMenus = document.querySelectorAll('#off-canvas-1aa01af ul.elementor-nav-menu');
+        mobileMenus.forEach(function (mobileMenu) {
+            // Check if we already restructured it
+            if (mobileMenu.querySelector('.menu-item-services-dropdown')) return;
+            
+            // Get the flat items we want to group by scanning href destinations (100% robust fallback)
+            var afterSalesLi = Array.from(mobileMenu.querySelectorAll('li')).find(function (li) {
+                var a = li.querySelector('a');
+                return a && (a.getAttribute('href') || '').indexOf('/after-sales-service/') !== -1;
+            });
+            var designLi = Array.from(mobileMenu.querySelectorAll('li')).find(function (li) {
+                var a = li.querySelector('a');
+                return a && (a.getAttribute('href') || '').indexOf('/design-planning/') !== -1;
+            });
+            var technicalLi = Array.from(mobileMenu.querySelectorAll('li')).find(function (li) {
+                var a = li.querySelector('a');
+                return a && (a.getAttribute('href') || '').indexOf('/technical-maintenance-support/') !== -1;
+            });
+            
+            if (!afterSalesLi && !designLi && !technicalLi) return;
+            
+            // Create the Services parent menu item
+            var servicesLi = document.createElement('li');
+            servicesLi.className = 'menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-services-dropdown';
+            
+            var servicesA = document.createElement('a');
+            servicesA.href = '#';
+            servicesA.className = 'elementor-item elementor-item-anchor';
+            servicesA.innerHTML = 'Services <span class="sub-menu-toggle-icon" style="font-size:9px; margin-left:4px;">▼</span>';
+            servicesLi.appendChild(servicesA);
+            
+            var subMenuUl = document.createElement('ul');
+            subMenuUl.className = 'sub-menu';
+            subMenuUl.style.display = 'none';
+            subMenuUl.style.paddingLeft = '15px';
+            subMenuUl.style.marginTop = '5px';
+            subMenuUl.style.listStyle = 'none';
+            
+            // Move the items into the submenu
+            if (designLi) {
+                subMenuUl.appendChild(designLi);
+            }
+            if (afterSalesLi) {
+                subMenuUl.appendChild(afterSalesLi);
+            }
+            if (technicalLi) {
+                subMenuUl.appendChild(technicalLi);
+            }
+            
+            servicesLi.appendChild(subMenuUl);
+            
+            // Insert Services parent item before the first service item
+            var insertBeforeLi = designLi || afterSalesLi || technicalLi;
+            mobileMenu.insertBefore(servicesLi, insertBeforeLi);
+            
+            // Add accordion click toggle logic
+            servicesA.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                var isOpen = subMenuUl.style.display === 'block';
+                subMenuUl.style.display = isOpen ? 'none' : 'block';
+                servicesA.querySelector('.sub-menu-toggle-icon').innerHTML = isOpen ? '▼' : '▲';
+            });
         });
     }
 
     function injectQuoteButtonInMobileMenu() {
-        var mobileMenu = document.querySelector('#menu-1-ba8a81e');
-        if (!mobileMenu) return;
-        
-        // Check if we already injected it
-        if (mobileMenu.querySelector('.menu-item-quote-btn-injected')) return;
-        
-        var quoteLi = document.createElement('li');
-        quoteLi.className = 'menu-item menu-item-quote-btn-injected';
-        quoteLi.style.marginTop = '15px';
-        quoteLi.style.listStyle = 'none';
-        
-        var quoteBtn = document.createElement('a');
-        quoteBtn.href = '#';
-        quoteBtn.className = 'elementor-button add-request-quote-button';
-        quoteBtn.style.display = 'flex';
-        quoteBtn.style.alignItems = 'center';
-        quoteBtn.style.justifyContent = 'center';
-        quoteBtn.style.background = 'linear-gradient(135deg, #40A2D8, #4AA485) !important';
-        quoteBtn.style.color = '#ffffff !important';
-        quoteBtn.style.border = 'none !important';
-        quoteBtn.style.borderRadius = '30px';
-        quoteBtn.style.padding = '12px 24px';
-        quoteBtn.style.fontWeight = '700';
-        quoteBtn.style.fontSize = '14px';
-        quoteBtn.style.textTransform = 'uppercase';
-        quoteBtn.style.letterSpacing = '0.5px';
-        quoteBtn.style.width = '100%';
-        quoteBtn.style.boxSizing = 'border-box';
-        quoteBtn.style.cursor = 'pointer';
-        
-        quoteBtn.innerHTML = '<span>Request Quote</span>';
-        quoteLi.appendChild(quoteBtn);
-        mobileMenu.appendChild(quoteLi);
-        
-        quoteBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            // Close mobile menu drawer first
-            if (typeof closeMobileMenu === 'function') {
-                closeMobileMenu();
-            } else {
-                document.body.classList.remove('ava-menu-active');
-                var drawer = document.getElementById('off-canvas-1aa01af');
-                if (drawer) drawer.classList.remove('ava-open');
-            }
-            // Open quote request cart drawer
-            setTimeout(function() {
-                if (typeof openDrawer === 'function') {
-                    openDrawer();
+        var mobileMenus = document.querySelectorAll('#off-canvas-1aa01af ul.elementor-nav-menu');
+        mobileMenus.forEach(function (mobileMenu) {
+            // Check if we already injected it
+            if (mobileMenu.querySelector('.menu-item-quote-btn-injected')) return;
+            
+            var quoteLi = document.createElement('li');
+            quoteLi.className = 'menu-item menu-item-quote-btn-injected';
+            quoteLi.style.marginTop = '15px';
+            quoteLi.style.listStyle = 'none';
+            
+            var quoteBtn = document.createElement('a');
+            quoteBtn.href = '#';
+            quoteBtn.className = 'elementor-button add-request-quote-button';
+            quoteBtn.style.display = 'flex';
+            quoteBtn.style.alignItems = 'center';
+            quoteBtn.style.justifyContent = 'center';
+            quoteBtn.style.background = 'linear-gradient(135deg, #40A2D8, #4AA485) !important';
+            quoteBtn.style.color = '#ffffff !important';
+            quoteBtn.style.border = 'none !important';
+            quoteBtn.style.borderRadius = '30px';
+            quoteBtn.style.padding = '12px 24px';
+            quoteBtn.style.fontWeight = '700';
+            quoteBtn.style.fontSize = '14px';
+            quoteBtn.style.textTransform = 'uppercase';
+            quoteBtn.style.letterSpacing = '0.5px';
+            quoteBtn.style.width = '100%';
+            quoteBtn.style.boxSizing = 'border-box';
+            quoteBtn.style.cursor = 'pointer';
+            
+            quoteBtn.innerHTML = '<span>Request Quote</span>';
+            quoteLi.appendChild(quoteBtn);
+            mobileMenu.appendChild(quoteLi);
+            
+            quoteBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                // Close mobile menu drawer first
+                if (typeof closeMobileMenu === 'function') {
+                    closeMobileMenu();
                 } else {
-                    var qDrawer = document.getElementById('ava-quote-drawer');
-                    var qBackdrop = document.getElementById('ava-quote-backdrop');
-                    if (qDrawer && qBackdrop) {
-                        qDrawer.classList.add('ava-open');
-                        qBackdrop.classList.add('ava-visible');
-                    }
+                    document.body.classList.remove('ava-menu-active');
+                    var drawer = document.getElementById('off-canvas-1aa01af');
+                    if (drawer) drawer.classList.remove('ava-open');
                 }
-            }, 350);
+                // Open quote request cart drawer
+                setTimeout(function() {
+                    if (typeof openDrawer === 'function') {
+                        openDrawer();
+                    } else {
+                        var qDrawer = document.getElementById('ava-quote-drawer');
+                        var qBackdrop = document.getElementById('ava-quote-backdrop');
+                        if (qDrawer && qBackdrop) {
+                            qDrawer.classList.add('ava-open');
+                            qBackdrop.classList.add('ava-visible');
+                        }
+                    }
+                }, 350);
+            });
         });
     }
 
@@ -2131,7 +2148,9 @@
         tabContainers.forEach(function (container) {
             var titles = container.querySelectorAll('.e-n-tab-title, ul.tabs li');
             titles.forEach(function (title) {
-                var controlsId = title.getAttribute('aria-controls') || (title.querySelector('a') ? title.querySelector('a').getAttribute('href').replace('#', '') : '');
+                var aEl = title.querySelector('a');
+                var hrefVal = aEl ? aEl.getAttribute('href') : '';
+                var controlsId = title.getAttribute('aria-controls') || (hrefVal ? hrefVal.replace('#', '') : '');
                 if (!controlsId) return;
                 var panel = document.getElementById(controlsId);
                 if (panel) {
@@ -2199,7 +2218,7 @@
             drawer.setAttribute('aria-hidden', 'false');
         }
         
-        var toggles = document.querySelectorAll('.elementor-element-defd4a6, .elementor-element-defd4a6 a, .elementor-menu-toggle');
+        var toggles = document.querySelectorAll('.elementor-element-defd4a6 a.elementor-icon, .elementor-menu-toggle');
         toggles.forEach(function (t) {
             t.classList.add('elementor-active');
             t.setAttribute('aria-expanded', 'true');
@@ -2222,7 +2241,7 @@
             drawer.setAttribute('aria-hidden', 'true');
         }
         
-        var toggles = document.querySelectorAll('.elementor-element-defd4a6, .elementor-element-defd4a6 a, .elementor-menu-toggle');
+        var toggles = document.querySelectorAll('.elementor-element-defd4a6 a.elementor-icon, .elementor-menu-toggle');
         toggles.forEach(function (t) {
             t.classList.remove('elementor-active');
             t.setAttribute('aria-expanded', 'false');
@@ -2232,10 +2251,10 @@
     window.closeMobileMenu = closeMobileMenu;
 
     function initMobileMenuInterceptions() {
-        var toggles = document.querySelectorAll('.elementor-element-defd4a6, .elementor-element-defd4a6 a, .elementor-menu-toggle');
+        var toggles = document.querySelectorAll('.elementor-element-defd4a6 a.elementor-icon, .elementor-menu-toggle');
         var drawer = document.getElementById('off-canvas-1aa01af');
         var overlay = drawer ? drawer.querySelector('.e-off-canvas__overlay') : null;
-        var closeButtons = drawer ? drawer.querySelectorAll('.elementor-icon, .e-off-canvas__close, .elementor-element-7fd8dd0 a') : [];
+        var closeButtons = drawer ? drawer.querySelectorAll('.e-off-canvas__close, .elementor-element-7fd8dd0 a.elementor-icon') : [];
 
         toggles.forEach(function (toggle) {
             toggle.setAttribute('role', 'button');
@@ -2267,7 +2286,7 @@
         });
 
         if (drawer) {
-            var links = drawer.querySelectorAll('.elementor-nav-menu--dropdown a, .e-off-canvas a');
+            var links = drawer.querySelectorAll('ul.elementor-nav-menu a');
             links.forEach(function (link) {
                 link.addEventListener('click', function (e) {
                     var parentLi = link.parentElement;
