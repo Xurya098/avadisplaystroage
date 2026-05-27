@@ -1396,63 +1396,399 @@
             justify-content: center !important;
         }
 
+        /* 5. SEARCH MODAL OVERHAUL WITH FROSTED GLASS */
+        .bdt-modal-full.bdt-modal {
+            background: rgba(8, 15, 28, 0.95) !important;
+            backdrop-filter: blur(25px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(25px) saturate(180%) !important;
+            z-index: 9999999 !important;
+        }
+        .bdt-modal-full.bdt-modal .bdt-search-input {
+            color: #ffffff !important;
+            font-size: clamp(1.5rem, 5vw, 2.5rem) !important;
+            background: transparent !important;
+            border: none !important;
+            border-bottom: 2px solid rgba(64, 162, 216, 0.5) !important;
+            padding: 12px 0 !important;
+            text-align: center !important;
+            outline: none !important;
+            font-family: inherit !important;
+            width: 80% !important;
+            margin: 0 auto !important;
+        }
+        .bdt-modal-full.bdt-modal .bdt-modal-close-full {
+            color: #ffffff !important;
+            background: rgba(255, 255, 255, 0.08) !important;
+            border: 1px solid rgba(255, 255, 255, 0.15) !important;
+            border-radius: 50% !important;
+            width: 48px !important;
+            height: 48px !important;
+            top: 20px !important;
+            right: 20px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+        }
+
+        /* 6. LOGO & COMPANY NAME BRAND ALIGNMENT */
+        .custom-site-logo a {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            text-decoration: none !important;
+        }
+        .custom-site-logo .ava-nav-logo {
+            max-height: 46px !important;
+            width: auto !important;
+            object-fit: contain !important;
+            transition: all 0.3s ease !important;
+        }
+        .custom-site-logo .ava-logo-text {
+            font-size: 11px !important;
+            font-weight: 800 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 2px !important;
+            color: #40A2D8 !important;
+            margin-top: 4px !important;
+            text-align: center !important;
+            white-space: nowrap !important;
+            transition: all 0.3s ease !important;
+            text-shadow: 0 0 10px rgba(64, 162, 216, 0.35) !important;
+        }
+        @media (max-width: 768px) {
+            .custom-site-logo {
+                max-width: 140px !important;
+            }
+            .custom-site-logo .ava-nav-logo {
+                max-height: 36px !important;
+            }
+            .custom-site-logo .ava-logo-text {
+                font-size: clamp(8px, 2.5vw, 9.5px) !important;
+                letter-spacing: 1px !important;
+                margin-top: 2px !important;
+            }
+        }
+
+        /* 7. DYNAMIC MOBILE HEADER RESPONSIVENESS */
         @media (max-width: 1024px) {
-            /* GLASSMORPHIC MOBILE MENU */
-            .elementor-nav-menu--dropdown {
+            .elementor-location-header .elementor-element-3f472c7 {
+                padding: 8px 16px !important;
+                display: flex !important;
+                flex-direction: row !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                flex-wrap: nowrap !important;
+                background: rgba(8, 15, 28, 0.85) !important;
+                backdrop-filter: blur(25px) saturate(180%) !important;
+                -webkit-backdrop-filter: blur(25px) saturate(180%) !important;
+                border-bottom: 1px solid rgba(120, 200, 255, 0.12) !important;
+                height: 70px !important;
                 position: fixed !important;
                 top: 0 !important;
-                right: -100vw !important;
-                width: 85vw !important;
-                max-width: 400px !important;
-                height: 100vh !important;
-                background: rgba(8, 15, 28, 0.90) !important;
-                backdrop-filter: blur(30px) saturate(180%) !important;
-                -webkit-backdrop-filter: blur(30px) saturate(180%) !important;
-                border-left: 1px solid rgba(64, 162, 216, 0.22) !important;
-                box-shadow: -20px 0 60px rgba(0, 0, 0, 0.7) !important;
-                z-index: 999999 !important;
-                display: flex !important;
-                flex-direction: column !important;
-                padding: 90px 24px 40px 24px !important;
-                transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
-                box-sizing: border-box !important;
-                overflow-y: auto !important;
-                
-                /* Prevent Clicks passing through closed mobile menu */
-                visibility: hidden !important;
-                pointer-events: none !important;
+                left: 0 !important;
+                width: 100vw !important;
+                z-index: 99999 !important;
             }
             
-            body.ava-menu-active {
-                overflow: hidden !important; /* Disable body scroll when menu open */
+            body {
+                padding-top: 70px !important;
             }
 
-            body.ava-menu-active .elementor-nav-menu--dropdown {
-                transform: translate3d(-100vw, 0, 0) !important;
-                visibility: visible !important;
-                pointer-events: auto !important;
+            .elementor-location-header .elementor-element-3f472c7 > .e-con-inner,
+            .elementor-location-header .elementor-element-3f472c7 > .elementor-container {
+                flex-direction: row !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                flex-wrap: nowrap !important;
+                padding: 0 !important;
+                width: 100% !important;
+                margin: 0 !important;
+            }
+
+            .elementor-location-header .elementor-element-82f49ac {
+                width: auto !important;
+                flex: 0 0 auto !important;
+                margin: 0 !important;
+                padding: 0 !important;
             }
             
-            /* Toggle class states for smooth transition */
-            .elementor-menu-toggle.elementor-active .elementor-menu-toggle__icon--open {
+            .elementor-location-header .elementor-element-5366156 {
+                width: auto !important;
+                flex: 0 0 auto !important;
+                display: flex !important;
+                flex-direction: row !important;
+                align-items: center !important;
+                justify-content: flex-end !important;
+                gap: 12px !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            .elementor-nav-menu--main {
                 display: none !important;
             }
-            .elementor-menu-toggle.elementor-active .elementor-menu-toggle__icon--close {
-                display: block !important;
+
+            .elementor-element-83c9a4d,
+            .elementor-element-defd4a6 {
+                display: inline-flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            .elementor-element-defd4a6 a.elementor-icon {
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                width: 48px !important;
+                height: 48px !important;
+                border-radius: 50% !important;
+                background: rgba(255, 255, 255, 0.05) !important;
+                border: 1px solid rgba(255, 255, 255, 0.1) !important;
+                transition: all 0.3s ease !important;
+            }
+        }
+
+        /* 8. PRE-ENGINEERED OFF-CANVAS DRAWERS */
+        #off-canvas-1aa01af.e-off-canvas {
+            display: block !important;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            z-index: 999999 !important;
+            pointer-events: none !important;
+            visibility: hidden !important;
+            transition: visibility 0.4s ease !important;
+        }
+
+        #off-canvas-1aa01af.e-off-canvas.ava-open {
+            pointer-events: auto !important;
+            visibility: visible !important;
+        }
+
+        #off-canvas-1aa01af .e-off-canvas__overlay {
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            background: rgba(4, 8, 16, 0.5) !important;
+            backdrop-filter: blur(15px) !important;
+            -webkit-backdrop-filter: blur(15px) !important;
+            opacity: 0 !important;
+            transition: opacity 0.4s ease !important;
+            pointer-events: none !important;
+        }
+
+        #off-canvas-1aa01af.e-off-canvas.ava-open .e-off-canvas__overlay {
+            opacity: 1 !important;
+            pointer-events: auto !important;
+        }
+
+        #off-canvas-1aa01af .e-off-canvas__main {
+            position: absolute !important;
+            top: 0 !important;
+            left: -320px !important;
+            width: 320px !important;
+            max-width: 85vw !important;
+            height: 100vh !important;
+            background: rgba(8, 15, 28, 0.94) !important;
+            backdrop-filter: blur(35px) saturate(190%) !important;
+            -webkit-backdrop-filter: blur(35px) saturate(190%) !important;
+            border-right: 1px solid rgba(64, 162, 216, 0.25) !important;
+            box-shadow: 20px 0 60px rgba(0, 0, 0, 0.8) !important;
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
+            transform: translate3d(0, 0, 0) !important;
+            z-index: 1000000 !important;
+            overflow-y: auto !important;
+            padding: 30px 20px !important;
+            box-sizing: border-box !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 20px !important;
+        }
+
+        #off-canvas-1aa01af.e-off-canvas.ava-open .e-off-canvas__main {
+            transform: translate3d(320px, 0, 0) !important;
+        }
+
+        #off-canvas-1aa01af .e-off-canvas__main::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom, #40A2D8, #4AA485);
+            box-shadow: 0 0 15px rgba(64, 162, 216, 0.6);
+        }
+
+        #off-canvas-1aa01af .elementor-element-7fd8dd0 {
+            position: absolute !important;
+            top: 15px !important;
+            right: 15px !important;
+            z-index: 1000010 !important;
+            margin: 0 !important;
+        }
+        
+        #off-canvas-1aa01af .elementor-element-7fd8dd0 a.elementor-icon {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: 44px !important;
+            height: 44px !important;
+            border-radius: 50% !important;
+            background: rgba(255, 255, 255, 0.05) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            color: #ffffff !important;
+            transition: all 0.3s ease !important;
+        }
+        
+        #off-canvas-1aa01af .elementor-nav-menu--main {
+            display: block !important;
+            width: 100% !important;
+            margin-top: 40px !important;
+        }
+        
+        #off-canvas-1aa01af ul.elementor-nav-menu {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 8px !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            list-style: none !important;
+        }
+        
+        #off-canvas-1aa01af ul.elementor-nav-menu a {
+            display: block !important;
+            padding: 12px 16px !important;
+            color: #ffffff !important;
+            font-size: 16px !important;
+            font-weight: 600 !important;
+            text-decoration: none !important;
+            border-radius: 12px !important;
+            background: rgba(255, 255, 255, 0.02) !important;
+            border: 1px solid rgba(255, 255, 255, 0.04) !important;
+            transition: all 0.3s ease !important;
+        }
+        
+        #off-canvas-1aa01af ul.elementor-nav-menu a:hover,
+        #off-canvas-1aa01af ul.elementor-nav-menu li.current-menu-item > a {
+            background: rgba(64, 162, 216, 0.12) !important;
+            border-color: rgba(64, 162, 216, 0.35) !important;
+            color: #40A2D8 !important;
+            box-shadow: 0 0 15px rgba(64, 162, 216, 0.1);
+        }
+        
+        #off-canvas-1aa01af ul.sub-menu {
+            padding-left: 16px !important;
+            margin: 4px 0 8px 0 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 6px !important;
+            list-style: none !important;
+        }
+        
+        #off-canvas-1aa01af ul.sub-menu a {
+            font-size: 14px !important;
+            font-weight: 500 !important;
+            padding: 10px 14px !important;
+            background: rgba(255, 255, 255, 0.01) !important;
+        }
+
+        #off-canvas-1aa01af .elementor-element-84b6964 {
+            width: 100% !important;
+            margin-top: 20px !important;
+        }
+        
+        #off-canvas-1aa01af .bdt-search-input {
+            width: 100% !important;
+            background: rgba(0, 0, 0, 0.4) !important;
+            border: 1px solid rgba(120, 200, 255, 0.15) !important;
+            color: #ffffff !important;
+            border-radius: 20px !important;
+            padding: 10px 16px !important;
+            font-size: 14px !important;
+            box-sizing: border-box !important;
+            outline: none !important;
+        }
+
+        #off-canvas-1aa01af .bdt-search-input:focus {
+            border-color: rgba(64, 162, 216, 0.6) !important;
+            box-shadow: 0 0 10px rgba(64, 162, 216, 0.25) !important;
+        }
+
+        /* 9. WOOCOMMERCE PRODUCT DETAILS AUTO-COLLAPSE EMPTY BLOCKS */
+        @media (max-width: 768px) {
+            .single-product .e-n-tabs,
+            .single-product .e-n-tabs-content,
+            .single-product .e-n-tab-content,
+            .single-product .e-con-inner,
+            .single-product .e-con,
+            .single-product .woocommerce-tabs,
+            .single-product .panel,
+            .single-product .entry-content,
+            .single-product .product_meta {
+                height: auto !important;
+                min-height: unset !important;
+                max-height: unset !important;
+                margin-top: 0 !important;
+                margin-bottom: 0 !important;
+                padding-top: 5px !important;
+                padding-bottom: 10px !important;
+                float: none !important;
+                width: 100% !important;
+                box-sizing: border-box !important;
             }
             
-            /* Glow Border indicator */
-            .elementor-nav-menu--dropdown::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 2px;
-                height: 100%;
-                background: linear-gradient(to bottom, #40A2D8, #4AA485);
-                box-shadow: 0 0 15px rgba(64, 162, 216, 0.6);
+            .single-product .shop_attributes, 
+            .single-product table.shop_attributes {
+                display: table !important;
+                width: 100% !important;
+                margin: 0 0 20px 0 !important;
+                box-sizing: border-box !important;
             }
-            
+            .single-product table.shop_attributes th,
+            .single-product table.shop_attributes td {
+                padding: 10px 8px !important;
+                font-size: 12.5px !important;
+            }
+        }
+
+        /* 10. FLOATING WHATSAPP BUTTON OVERLAP REPOSITION */
+        #chaty-widget, 
+        .chaty-widget, 
+        .chaty-main-button,
+        .chaty-main-button-holder {
+            bottom: clamp(90px, 12vh, 120px) !important;
+            z-index: 99990 !important;
+        }
+
+        /* 11. BUTTONS CLIPPING & TOUCH UX FIXES */
+        .elementor-button,
+        .add-request-quote-button,
+        .yith-ywraq-add-to-quote,
+        .ava-qty-btn,
+        .ava-remove-item,
+        .swiper-button-prev,
+        .swiper-button-next {
+            min-height: 48px !important;
+            box-sizing: border-box !important;
+            touch-action: manipulation !important;
+            text-overflow: ellipsis !important;
+            white-space: normal !important;
+            word-wrap: break-word !important;
+            text-align: center !important;
+        }
+
+        @media (max-width: 1024px) {
+            /* GLASSMORPHIC MOBILE MENU BACKDROP */
             .ava-menu-backdrop {
                 position: fixed;
                 top: 0;
@@ -1476,24 +1812,32 @@
 
         @media (max-width: 768px) {
             /* RESPONSIVE TYPOGRAPHY & CINEMATIC SCALING */
-            h1 {
-                font-size: clamp(2rem, 8vw, 2.8rem) !important;
+            h1, .elementor-heading-title.elementor-size-default, .elementor-heading-title {
+                font-size: clamp(1.5rem, 6.5vw, 2.2rem) !important;
                 line-height: 1.25 !important;
                 letter-spacing: -0.5px !important;
             }
             h2 {
-                font-size: clamp(1.5rem, 6vw, 2rem) !important;
+                font-size: clamp(1.3rem, 5.5vw, 1.8rem) !important;
                 line-height: 1.3 !important;
                 letter-spacing: -0.3px !important;
             }
             h3 {
-                font-size: clamp(1.25rem, 5vw, 1.5rem) !important;
+                font-size: clamp(1.15rem, 4.5vw, 1.4rem) !important;
+            }
+            
+            .elementor-widget-text-editor, .elementor-text-editor {
+                font-size: clamp(0.9rem, 3.2vw, 1.05rem) !important;
+                line-height: 1.5 !important;
             }
             
             /* Spacing fixes - reduce massive padding */
-            .elementor-section, .section, section {
-                padding-top: 45px !important;
-                padding-bottom: 45px !important;
+            .e-con.e-parent, 
+            .elementor-section.elementor-top-section {
+                padding-top: clamp(24px, 6vw, 40px) !important;
+                padding-bottom: clamp(24px, 6vw, 40px) !important;
+                margin-top: 0 !important;
+                margin-bottom: 0 !important;
             }
             
             .elementor-container, .e-con-inner, .e-con {
@@ -1507,13 +1851,15 @@
             /* PRODUCT CARDS & LOOP GRIDS RESPONSIVENESS */
             .elementor-element-cc6de85, 
             .woocommerce ul.products li.product, 
-            .e-loop-item {
+            .e-loop-item,
+            .glowing-card {
                 padding: 20px !important;
                 margin: 0 auto 20px auto !important;
                 width: 100% !important;
                 max-width: 100% !important;
                 float: none !important;
                 box-sizing: border-box !important;
+                overflow: hidden !important;
             }
             
             /* Buttons Stacking inside Cards */
@@ -1594,8 +1940,7 @@
             .single-product .yith-ywraq-add-to-quote,
             .single-product .add-request-quote-button {
                 width: 100% !important;
-                box-sizing: border-box !important;
-            }
+                box-sizing: border-box !}
             .single-product .add-request-quote-button {
                 padding: 14px 20px !important;
                 font-size: 15px !important;
@@ -1604,74 +1949,97 @@
                 display: flex !important;
             }
         }
-    `;
+    \`;
 
     function initResponsiveStyles() {
-        if (!document.getElementById('ava-responsive-styles')) {
-            var styleEl = document.createElement('style');
-            styleEl.id = 'ava-responsive-styles';
+        if (!document.getElementById(\`ava-responsive-styles\`)) {
+            var styleEl = document.createElement(\`style\`);
+            styleEl.id = \`ava-responsive-styles\`;
             styleEl.innerHTML = RESPONSIVE_CSS;
             document.head.appendChild(styleEl);
         }
     }
 
     function initMobileMenuInterceptions() {
-        var toggles = document.querySelectorAll('.elementor-menu-toggle');
-        
-        // Add a backdrop if it doesn't exist
-        var backdrop = document.querySelector('.ava-menu-backdrop');
-        if (!backdrop) {
-            backdrop = document.createElement('div');
-            backdrop.className = 'ava-menu-backdrop';
-            backdrop.setAttribute('aria-hidden', 'true');
-            document.body.appendChild(backdrop);
-            
-            // Clicking backdrop closes menu
-            backdrop.addEventListener('click', closeMobileMenu);
+        var toggles = document.querySelectorAll(\`.elementor-element-defd4a6, .elementor-menu-toggle\`);
+        var drawer = document.getElementById(\`off-canvas-1aa01af\`);
+        var overlay = drawer ? drawer.querySelector(\`.e-off-canvas__overlay\`) : null;
+        var closeButtons = drawer ? drawer.querySelectorAll(\`.elementor-icon, .e-off-canvas__close\`) : [];
+
+        function openMobileMenu(e) {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            document.body.classList.add(\`ava-menu-active\`);
+            if (drawer) {
+                drawer.classList.add(\`ava-open\`);
+                drawer.setAttribute(\`aria-hidden\`, \`false\`);
+            }
+            toggles.forEach(function (t) {
+                t.classList.add(\`elementor-active\`);
+                t.setAttribute(\`aria-expanded\`, \`true\`);
+            });
+        }
+
+        function closeMobileMenu(e) {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            document.body.classList.remove(\`ava-menu-active\`);
+            if (drawer) {
+                drawer.classList.remove(\`ava-open\`);
+                drawer.setAttribute(\`aria-hidden\`, \`true\`);
+            }
+            toggles.forEach(function (t) {
+                t.classList.remove(\`elementor-active\`);
+                t.setAttribute(\`aria-expanded\`, \`false\`);
+            });
         }
 
         toggles.forEach(function (toggle) {
-            toggle.setAttribute('role', 'button');
-            toggle.setAttribute('aria-label', 'Toggle navigation menu');
-            toggle.addEventListener('click', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                var isActive = document.body.classList.contains('ava-menu-active');
+            toggle.setAttribute(\`role\`, \`button\`);
+            toggle.setAttribute(\`aria-label\`, \`Toggle navigation menu\`);
+            toggle.addEventListener(\`click\`, function (e) {
+                var isActive = document.body.classList.contains(\`ava-menu-active\`);
                 if (isActive) {
-                    closeMobileMenu();
+                    closeMobileMenu(e);
                 } else {
-                    openMobileMenu();
+                    openMobileMenu(e);
                 }
             });
         });
 
-        // Add ARIA attributes to dropdown menu
-        var menuDropdown = document.querySelector('.elementor-nav-menu--dropdown');
-        if (menuDropdown) {
-            menuDropdown.setAttribute('role', 'navigation');
-            menuDropdown.setAttribute('aria-label', 'Mobile navigation list');
+        if (overlay) {
+            overlay.addEventListener(\`click\`, closeMobileMenu);
         }
 
-        // Close menu on link clicks
-        var links = document.querySelectorAll('.elementor-nav-menu--dropdown a, .e-off-canvas a');
-        links.forEach(function (link) {
-            link.addEventListener('click', closeMobileMenu);
+        var backdrop = document.querySelector(\`.ava-menu-backdrop\`);
+        if (!backdrop) {
+            backdrop = document.createElement(\`div\`);
+            backdrop.className = \`ava-menu-backdrop\`;
+            backdrop.setAttribute(\`aria-hidden\`, \`true\`);
+            document.body.appendChild(backdrop);
+        }
+        backdrop.addEventListener(\`click\`, closeMobileMenu);
+
+        closeButtons.forEach(function (btn) {
+            btn.addEventListener(\`click\`, closeMobileMenu);
         });
 
-        function openMobileMenu() {
-            document.body.classList.add('ava-menu-active');
-            toggles.forEach(function (t) {
-                t.classList.add('elementor-active');
-                t.setAttribute('aria-expanded', 'true');
-            });
-        }
-
-        function closeMobileMenu() {
-            document.body.classList.remove('ava-menu-active');
-            toggles.forEach(function (t) {
-                t.classList.remove('elementor-active');
-                t.setAttribute('aria-expanded', 'false');
+        if (drawer) {
+            var links = drawer.querySelectorAll(\`.elementor-nav-menu--dropdown a, .e-off-canvas a\`);
+            links.forEach(function (link) {
+                link.addEventListener(\`click\`, function (e) {
+                    var parentLi = link.parentElement;
+                    var hasSub = parentLi.classList.contains(\`menu-item-has-children\`) || parentLi.classList.contains(\`elementor-item-has-children\`);
+                    var href = link.getAttribute(\`href\`);
+                    if (hasSub && (href === \`#\` || href === \`\` || href === \`javascript:void(0)\`)) {
+                        return;
+                    }
+                    closeMobileMenu();
+                });
             });
         }
     }
