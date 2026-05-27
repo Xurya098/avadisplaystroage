@@ -1334,9 +1334,7 @@
 
         // Sync initial UI
         updateUI();
-    }
-
-    var RESPONSIVE_CSS = `
+     var RESPONSIVE_CSS = `
         /* Prevent horizontal scroll globally */
         html, body {
             max-width: 100vw !important;
@@ -1345,8 +1343,61 @@
             -webkit-font-smoothing: antialiased;
         }
 
+        /* 1. GPU-ACCELERATED COMPOSITOR LAYERS */
+        .ava-quote-drawer,
+        .elementor-nav-menu--dropdown,
+        .ava-quote-launcher,
+        .ava-menu-backdrop,
+        .swiper-slide {
+            will-change: transform, opacity !important;
+            backface-visibility: hidden !important;
+            -webkit-backface-visibility: hidden !important;
+        }
+
+        /* 2. OFF-SCREEN CONTENT CONTAINER CONTAINMENT (60 FPS BOOST) */
+        .e-con.e-parent:nth-of-type(n+4) {
+            content-visibility: auto !important;
+            contain-intrinsic-size: 800px !important;
+        }
+
+        /* 3. ACCESSIBLE CONTRAST & READABILITY */
+        p, 
+        .ava-cart-item-model, 
+        .ava-empty-cart p, 
+        select option,
+        span.elementor-icon-list-text {
+            color: #cbd5e1 !important; /* Premium WCAG AA compliant text color */
+        }
+        
+        .ava-cart-item-name,
+        .ava-drawer-header h2,
+        .elementor-nav-menu--dropdown a,
+        .glowing-card h2,
+        .glowing-card p,
+        .contact-hero h1,
+        .contact-hero p {
+            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7) !important;
+            color: #ffffff !important;
+        }
+
+        /* 4. EXPANDED TOUCH TARGET BINDINGS (Lighthouse Target) */
+        .elementor-menu-toggle,
+        .ava-drawer-close,
+        .ava-qty-btn,
+        .ava-remove-item,
+        .swiper-button-prev,
+        .swiper-button-next,
+        .ava-quote-launcher {
+            min-width: 48px !important;
+            min-height: 48px !important;
+            touch-action: manipulation !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+
         @media (max-width: 1024px) {
-            /* 1. GLASSMORPHIC MOBILE MENU */
+            /* GLASSMORPHIC MOBILE MENU */
             .elementor-nav-menu--dropdown {
                 position: fixed !important;
                 top: 0 !important;
@@ -1355,8 +1406,8 @@
                 max-width: 400px !important;
                 height: 100vh !important;
                 background: rgba(8, 15, 28, 0.90) !important;
-                backdrop-filter: blur(35px) saturate(180%) !important;
-                -webkit-backdrop-filter: blur(35px) saturate(180%) !important;
+                backdrop-filter: blur(30px) saturate(180%) !important;
+                -webkit-backdrop-filter: blur(30px) saturate(180%) !important;
                 border-left: 1px solid rgba(64, 162, 216, 0.22) !important;
                 box-shadow: -20px 0 60px rgba(0, 0, 0, 0.7) !important;
                 z-index: 999999 !important;
@@ -1366,6 +1417,10 @@
                 transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
                 box-sizing: border-box !important;
                 overflow-y: auto !important;
+                
+                /* Prevent Clicks passing through closed mobile menu */
+                visibility: hidden !important;
+                pointer-events: none !important;
             }
             
             body.ava-menu-active {
@@ -1374,9 +1429,11 @@
 
             body.ava-menu-active .elementor-nav-menu--dropdown {
                 transform: translate3d(-100vw, 0, 0) !important;
+                visibility: visible !important;
+                pointer-events: auto !important;
             }
             
-            /* Toggle classes */
+            /* Toggle class states for smooth transition */
             .elementor-menu-toggle.elementor-active .elementor-menu-toggle__icon--open {
                 display: none !important;
             }
@@ -1418,7 +1475,7 @@
         }
 
         @media (max-width: 768px) {
-            /* 2. RESPONSIVE TYPOGRAPHY & CINEMATIC SCALING */
+            /* RESPONSIVE TYPOGRAPHY & CINEMATIC SCALING */
             h1 {
                 font-size: clamp(2rem, 8vw, 2.8rem) !important;
                 line-height: 1.25 !important;
@@ -1447,7 +1504,7 @@
                 width: 100% !important;
             }
 
-            /* 3. PRODUCT CARDS & LOOP GRIDS RESPONSIVENESS */
+            /* PRODUCT CARDS & LOOP GRIDS RESPONSIVENESS */
             .elementor-element-cc6de85, 
             .woocommerce ul.products li.product, 
             .e-loop-item {
@@ -1494,7 +1551,7 @@
                 height: auto !important;
             }
 
-            /* 4. CAROUSEL & SWIPER SPATIAL FIXES */
+            /* CAROUSEL & SWIPER SPATIAL FIXES */
             .swiper-button-prev,
             .swiper-button-next {
                 width: 38px !important;
@@ -1514,7 +1571,7 @@
             .swiper-button-next { right: 4px !important; }
             .swiper-pagination { bottom: 6px !important; }
 
-            /* 5. PRODUCT DETAILS PAGE MOBILE FLOW */
+            /* PRODUCT DETAILS PAGE MOBILE FLOW */
             .product-template-default .site-main .elementor-section,
             .single-product .product {
                 display: flex !important;
@@ -1566,6 +1623,7 @@
         if (!backdrop) {
             backdrop = document.createElement('div');
             backdrop.className = 'ava-menu-backdrop';
+            backdrop.setAttribute('aria-hidden', 'true');
             document.body.appendChild(backdrop);
             
             // Clicking backdrop closes menu
@@ -1573,6 +1631,8 @@
         }
 
         toggles.forEach(function (toggle) {
+            toggle.setAttribute('role', 'button');
+            toggle.setAttribute('aria-label', 'Toggle navigation menu');
             toggle.addEventListener('click', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
@@ -1585,6 +1645,13 @@
                 }
             });
         });
+
+        // Add ARIA attributes to dropdown menu
+        var menuDropdown = document.querySelector('.elementor-nav-menu--dropdown');
+        if (menuDropdown) {
+            menuDropdown.setAttribute('role', 'navigation');
+            menuDropdown.setAttribute('aria-label', 'Mobile navigation list');
+        }
 
         // Close menu on link clicks
         var links = document.querySelectorAll('.elementor-nav-menu--dropdown a, .e-off-canvas a');
