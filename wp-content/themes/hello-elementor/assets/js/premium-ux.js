@@ -66,194 +66,7 @@
        2. VISION PRO SPACE DRAGGING TELEMETRY PHYSICS ENGINE
        ================================================================ */
     function initSpatialTelemetry() {
-        var hero = document.querySelector('.elementor-element-e532450');
-        if (!hero && document.body.classList.contains('single-product')) {
-            hero = document.querySelector('.elementor-element-e35fc5d > .e-con-inner');
-        }
-        if (!hero || hero.querySelector('.ava-telemetry-panel')) return;
-
-        var panel = document.createElement('div');
-        panel.className = 'ava-telemetry-panel';
-
-        panel.innerHTML = 
-            '<div class="ava-telemetry-header">' +
-                '<span class="ava-telemetry-title">AVA Tech Diagnostic</span>' +
-                '<div class="ava-telemetry-status"></div>' +
-            '</div>' +
-            '<div class="ava-telemetry-row">' +
-                '<span class="ava-telemetry-label">CHAMBER TEMP:</span>' +
-                '<span class="ava-telemetry-value" id="tele-temp">-18.2 °C</span>' +
-            '</div>' +
-            '<div class="ava-telemetry-row">' +
-                '<span class="ava-telemetry-label">COMPRESSOR LOAD:</span>' +
-                '<span class="ava-telemetry-value" id="tele-load">42.5 %</span>' +
-            '</div>' +
-            '<div class="ava-telemetry-row">' +
-                '<span class="ava-telemetry-label">ENERGY DRAW:</span>' +
-                '<span class="ava-telemetry-value" id="tele-energy">0.78 kW/h</span>' +
-            '</div>' +
-            '<div class="ava-telemetry-row">' +
-                '<span class="ava-telemetry-label">FLOW SPEED:</span>' +
-                '<span class="ava-telemetry-value" style="color:#00FF66; font-weight:800;">1.4 m/s</span>' +
-            '</div>';
-
-        hero.appendChild(panel);
-
-        // Fluctuate stats
-        setInterval(function () {
-            var temp = (-18.0 - Math.random() * 0.5).toFixed(1);
-            var load = (40.0 + Math.random() * 5).toFixed(1);
-            var energy = (0.75 + Math.random() * 0.06).toFixed(2);
-
-            var tempEl = document.getElementById('tele-temp');
-            var loadEl = document.getElementById('tele-load');
-            var energyEl = document.getElementById('tele-energy');
-
-            if (tempEl) tempEl.textContent = temp + ' °C';
-            if (loadEl) loadEl.textContent = load + ' %';
-            if (energyEl) energyEl.textContent = energy + ' kW/h';
-        }, 3000);
-
-        // Spatial drag mechanics with SpringSnapping and Inertia
-        var isDragging = false;
-        var startX = 0, startY = 0;
-        var vx = 0, vy = 0;
-        var lastMouseX = 0, lastMouseY = 0;
-        var lastTime = 0;
-        var animationFrameId = null;
-
-        panel.style.position = 'fixed';
-        panel.style.bottom = '100px';
-        panel.style.right = '40px';
-        panel.style.left = 'auto';
-        panel.style.top = 'auto';
-        panel.style.cursor = 'grab';
-        panel.style.touchAction = 'none';
-
-        panel.addEventListener('pointerdown', function (e) {
-            // Prevent interference with input fields
-            if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
-            isDragging = true;
-            panel.style.cursor = 'grabbing';
-            panel.style.transition = 'none';
-            panel.style.boxShadow = '0 32px 80px rgba(64, 162, 216, 0.35)';
-            
-            var rect = panel.getBoundingClientRect();
-            startX = e.clientX - rect.left;
-            startY = e.clientY - rect.top;
-            
-            lastMouseX = e.clientX;
-            lastMouseY = e.clientY;
-            lastTime = Date.now();
-            vx = 0;
-            vy = 0;
-            
-            if (animationFrameId) {
-                cancelAnimationFrame(animationFrameId);
-            }
-            
-            try {
-                panel.setPointerCapture(e.pointerId);
-            } catch (err) {
-                console.warn('[AVA] setPointerCapture failed:', err);
-            }
-        });
-
-        panel.addEventListener('pointermove', function (e) {
-            if (!isDragging) return;
-            
-            var x = e.clientX - startX;
-            var y = e.clientY - startY;
-            
-            var maxX = window.innerWidth - panel.offsetWidth;
-            var maxY = window.innerHeight - panel.offsetHeight;
-            x = Math.max(0, Math.min(x, maxX));
-            y = Math.max(0, Math.min(y, maxY));
-            
-            panel.style.left = x + 'px';
-            panel.style.top = y + 'px';
-            panel.style.bottom = 'auto';
-            panel.style.right = 'auto';
-            
-            var now = Date.now();
-            var dt = now - lastTime;
-            if (dt > 0) {
-                vx = (e.clientX - lastMouseX) / dt * 16.66;
-                vy = (e.clientY - lastMouseY) / dt * 16.66;
-            }
-            
-            lastMouseX = e.clientX;
-            lastMouseY = e.clientY;
-            lastTime = now;
-        });
-
-        panel.addEventListener('pointerup', function (e) {
-            if (!isDragging) return;
-            isDragging = false;
-            panel.style.cursor = 'grab';
-            try {
-                panel.releasePointerCapture(e.pointerId);
-            } catch (err) {
-                console.warn('[AVA] releasePointerCapture failed:', err);
-            }
-            
-            startMomentumAndSnap();
-        });
-
-        function startMomentumAndSnap() {
-            var friction = 0.92;
-            var snapThreshold = 180;
-            
-            function step() {
-                if (isDragging) return;
-                
-                var rect = panel.getBoundingClientRect();
-                var x = rect.left + vx;
-                var y = rect.top + vy;
-                
-                vx *= friction;
-                vy *= friction;
-                
-                var maxX = window.innerWidth - panel.offsetWidth;
-                var maxY = window.innerHeight - panel.offsetHeight;
-                
-                var snapForce = 0.15;
-                
-                var distLeft = x;
-                var distRight = maxX - x;
-                var distTop = y;
-                var distBottom = maxY - y;
-                
-                // Snap triggers
-                if (distLeft < snapThreshold && distLeft < distRight) {
-                    vx += (20 - x) * snapForce;
-                } else if (distRight < snapThreshold) {
-                    vx += (maxX - 20 - x) * snapForce;
-                }
-                
-                if (distTop < snapThreshold && distTop < distBottom) {
-                    vy += (20 - y) * snapForce;
-                } else if (distBottom < snapThreshold) {
-                    vy += (maxY - 20 - y) * snapForce;
-                }
-                
-                x = Math.max(0, Math.min(x, maxX));
-                y = Math.max(0, Math.min(y, maxY));
-                
-                panel.style.left = x + 'px';
-                panel.style.top = y + 'px';
-                
-                if (Math.abs(vx) < 0.05 && Math.abs(vy) < 0.05) {
-                    panel.style.boxShadow = '';
-                    panel.style.transition = 'box-shadow 0.3s ease';
-                    return;
-                }
-                
-                animationFrameId = requestAnimationFrame(step);
-            }
-            
-            animationFrameId = requestAnimationFrame(step);
-        }
+        // Disabled completely per client request
     }
 
     /* ================================================================
@@ -319,10 +132,10 @@
                 if (href === '#' || href === '' || href === 'javascript:void(0)') {
                     e.preventDefault();
                     e.stopPropagation();
-                    
+
                     var parentLi = link.parentElement;
                     var subMenu = parentLi.querySelector('.sub-menu, .elementor-nav-menu--dropdown');
-                    
+
                     parentLi.classList.toggle('sub-menu-active');
                     if (subMenu) {
                         if (subMenu.style.display === 'block') {
@@ -381,8 +194,8 @@
                 var x = e.clientX - bound.left;
                 var y = e.clientY - bound.top;
 
-                var tiltX = ((bound.height / 2) - y) / (bound.height / 2) * 3; 
-                var tiltY = (x - (bound.width / 2)) / (bound.width / 2) * 3;   
+                var tiltX = ((bound.height / 2) - y) / (bound.height / 2) * 3;
+                var tiltY = (x - (bound.width / 2)) / (bound.width / 2) * 3;
 
                 card.style.transform = 'perspective(1000px) rotateX(' + tiltX + 'deg) rotateY(' + tiltY + 'deg) translateY(-6px)';
                 card.style.transition = 'transform 0.08s ease-out';
@@ -432,12 +245,12 @@
             if (!link) return;
             var url = link.getAttribute('href');
             if (!url) return;
-            
+
             card.style.cursor = 'pointer';
             card.addEventListener('click', function (e) {
                 // Let native link clicks work directly
                 if (e.target.closest('a')) return;
-                
+
                 e.preventDefault();
                 window.location.href = url;
             });
@@ -927,7 +740,7 @@
         }
     }
 
-    window.changeQty = function(id, delta) {
+    window.changeQty = function (id, delta) {
         var cart = getCart();
         var item = cart.find(function (x) { return x.id === id; });
         if (item) {
@@ -939,7 +752,7 @@
         }
     };
 
-    window.removeFromCart = function(id) {
+    window.removeFromCart = function (id) {
         var cart = getCart();
         cart = cart.filter(function (x) { return x.id !== id; });
         saveCart(cart);
@@ -948,7 +761,7 @@
     function updateUI() {
         var cart = getCart();
         var totalCount = cart.reduce(function (sum, item) { return sum + item.quantity; }, 0);
-        
+
         var badge = document.getElementById('ava-launcher-badge');
         if (badge) {
             badge.textContent = totalCount;
@@ -965,7 +778,7 @@
         navLinks.forEach(function (link) {
             var textSpan = link.querySelector('.elementor-button-text') || link;
             textSpan.innerHTML = 'Quote Request (' + totalCount + ')';
-            
+
             if (!link.classList.contains('ava-nav-intercepted')) {
                 link.classList.add('ava-nav-intercepted');
                 link.addEventListener('click', function (e) {
@@ -985,10 +798,10 @@
         if (!listContainer) return;
 
         if (cart.length === 0) {
-            listContainer.innerHTML = 
+            listContainer.innerHTML =
                 '<div class="ava-empty-cart">' +
-                    '<p>Your Quote Request list is currently empty.</p>' +
-                    '<a href="/shop/" class="ava-browse-shop-btn">Browse Shop</a>' +
+                '<p>Your Quote Request list is currently empty.</p>' +
+                '<a href="/shop/" class="ava-browse-shop-btn">Browse Shop</a>' +
                 '</div>';
             var form = document.getElementById('ava-inquiry-form');
             if (form) form.style.display = 'none';
@@ -1000,21 +813,21 @@
 
         var html = '';
         cart.forEach(function (item) {
-            html += 
+            html +=
                 '<div class="ava-cart-item" data-id="' + item.id + '">' +
-                    '<img src="' + item.image + '" alt="' + item.name + '" class="ava-cart-item-img" />' +
-                    '<div class="ava-cart-item-details">' +
-                        '<h4 class="ava-cart-item-name">' + item.name + '</h4>' +
-                        '<p class="ava-cart-item-model">' + item.slug + '</p>' +
-                        '<div class="ava-cart-item-controls">' +
-                            '<div class="ava-qty-selector">' +
-                                '<button class="ava-qty-btn ava-qty-minus" onclick="changeQty(\'' + item.id + '\', -1)">-</button>' +
-                                '<span class="ava-qty-value">' + item.quantity + '</span>' +
-                                '<button class="ava-qty-btn ava-qty-plus" onclick="changeQty(\'' + item.id + '\', 1)">+</button>' +
-                            '</div>' +
-                            '<button class="ava-remove-item" onclick="removeFromCart(\'' + item.id + '\')">Remove</button>' +
-                        '</div>' +
-                    '</div>' +
+                '<img src="' + item.image + '" alt="' + item.name + '" class="ava-cart-item-img" />' +
+                '<div class="ava-cart-item-details">' +
+                '<h4 class="ava-cart-item-name">' + item.name + '</h4>' +
+                '<p class="ava-cart-item-model">' + item.slug + '</p>' +
+                '<div class="ava-cart-item-controls">' +
+                '<div class="ava-qty-selector">' +
+                '<button class="ava-qty-btn ava-qty-minus" onclick="changeQty(\'' + item.id + '\', -1)">-</button>' +
+                '<span class="ava-qty-value">' + item.quantity + '</span>' +
+                '<button class="ava-qty-btn ava-qty-plus" onclick="changeQty(\'' + item.id + '\', 1)">+</button>' +
+                '</div>' +
+                '<button class="ava-remove-item" onclick="removeFromCart(\'' + item.id + '\')">Remove</button>' +
+                '</div>' +
+                '</div>' +
                 '</div>';
         });
         listContainer.innerHTML = html;
@@ -1030,12 +843,12 @@
 
         var isSingleProduct = document.body.classList.contains('single-product');
         var mainProductBtn = document.querySelector('.elementor-widget-yith-ywraq-button-quote .add-request-quote-button');
-        
+
         if (isSingleProduct && mainProductBtn && mainProductBtn.getAttribute('data-product_id') === id) {
             var titleEl = document.querySelector('h1.elementor-heading-title') || document.querySelector('.product_title');
             name = titleEl ? titleEl.innerText.trim() : 'Product';
             slug = window.location.pathname.split('/').filter(Boolean).pop() || '';
-            
+
             var imgEl = document.querySelector('.woocommerce-product-gallery__image img') || document.querySelector('.wp-post-image');
             var imgSrc = imgEl ? (imgEl.getAttribute('src') || imgEl.getAttribute('data-src')) : '';
             if (imgSrc) {
@@ -1046,10 +859,10 @@
                     image = imgSrc;
                 }
             }
-            
+
             var contentEl = document.querySelector('.elementor-widget-woocommerce-product-content') || document.querySelector('.woocommerce-product-details__short-description');
             specs = contentEl ? contentEl.innerText.trim() : '';
-            
+
             var breadcrumbs = document.querySelector('#breadcrumbs');
             if (breadcrumbs) {
                 var links = breadcrumbs.querySelectorAll('a');
@@ -1062,13 +875,13 @@
             if (card) {
                 var titleEl = card.querySelector('.woocommerce-loop-product__title') || card.querySelector('.elementor-heading-title') || card.querySelector('h2');
                 name = titleEl ? titleEl.innerText.trim() : 'Product';
-                
+
                 var linkEl = card.querySelector('a.woocommerce-LoopProduct-link') || card.querySelector('a.elementor-button') || card.querySelector('a');
                 if (linkEl) {
                     var href = linkEl.getAttribute('href') || '';
                     slug = href.split('/').filter(Boolean).pop() || '';
                 }
-                
+
                 var imgEl = card.querySelector('img');
                 if (imgEl) {
                     var imgSrc = imgEl.getAttribute('src') || imgEl.getAttribute('data-src') || '';
@@ -1122,47 +935,47 @@
         var product = extractProductDetails(btn);
         var cart = getCart();
         var existing = cart.find(function (item) { return item.id === product.id; });
-        
+
         if (existing) {
             existing.quantity += 1;
         } else {
             cart.push(product);
         }
-        
+
         saveCart(cart);
-        
+
         var origHTML = btn.innerHTML;
         btn.innerHTML = '<span>Added ✓</span>';
         btn.classList.add('ava-btn-added');
-        
-        setTimeout(function() {
+
+        setTimeout(function () {
             btn.innerHTML = origHTML;
             btn.classList.remove('ava-btn-added');
         }, 2000);
-        
+
         openDrawer();
     }
 
     function submitQuoteForm(e) {
         e.preventDefault();
-        
+
         var name = document.getElementById('ava-form-name').value.trim();
         var business = document.getElementById('ava-form-business').value.trim();
         var phone = document.getElementById('ava-form-phone').value.trim();
         var email = document.getElementById('ava-form-email').value.trim();
         var notes = document.getElementById('ava-form-notes').value.trim();
-        
+
         var cart = getCart();
         if (cart.length === 0) {
             alert('Your quote list is empty!');
             return;
         }
-        
+
         var msg = "Hello AVA Display Storage,\n\nI would like a quotation for:\n\n";
         cart.forEach(function (item, index) {
             msg += (index + 1) + ". " + item.name + " (" + item.slug + ") — Qty: " + item.quantity + "\n";
         });
-        
+
         msg += "\nName: " + name;
         msg += "\nBusiness: " + business;
         msg += "\nPhone: " + phone;
@@ -1170,9 +983,9 @@
         if (notes) {
             msg += "\nNotes: " + notes;
         }
-        
+
         msg += "\n\nPlease contact me.";
-        
+
         // Show submission loading state on the button
         var submitBtn = document.getElementById('ava-submit-quote');
         var origBtnText = submitBtn.innerHTML;
@@ -1201,29 +1014,29 @@
             },
             body: JSON.stringify(payload)
         })
-        .then(function (res) { return res.json(); })
-        .catch(function (err) {
-            console.error('Supabase lead save failed:', err);
-            return { success: false, error: err.message };
-        });
+            .then(function (res) { return res.json(); })
+            .catch(function (err) {
+                console.error('Supabase lead save failed:', err);
+                return { success: false, error: err.message };
+            });
 
         Promise.race([savePromise, fetchTimeout])
-        .then(function (result) {
-            // Restore button
-            submitBtn.innerHTML = origBtnText;
-            submitBtn.disabled = false;
+            .then(function (result) {
+                // Restore button
+                submitBtn.innerHTML = origBtnText;
+                submitBtn.disabled = false;
 
-            // Trigger WhatsApp redirect immediately
-            var waUrl = "https://api.whatsapp.com/send?phone=6583437864&text=" + encodeURIComponent(msg);
-            window.open(waUrl, '_blank');
-            
-            // Clear cart
-            localStorage.removeItem('ava_quote_cart');
-            closeDrawer();
-            updateUI();
-            
-            alert("Quote request successfully compiled! Opening WhatsApp to send your inquiry.");
-        });
+                // Trigger WhatsApp redirect immediately
+                var waUrl = "https://api.whatsapp.com/send?phone=6583437864&text=" + encodeURIComponent(msg);
+                window.open(waUrl, '_blank');
+
+                // Clear cart
+                localStorage.removeItem('ava_quote_cart');
+                closeDrawer();
+                updateUI();
+
+                alert("Quote request successfully compiled! Opening WhatsApp to send your inquiry.");
+            });
     }
 
     function injectQuoteButtonsIntoFeatured() {
@@ -1278,37 +1091,37 @@
             var drawer = document.createElement('div');
             drawer.id = 'ava-quote-drawer';
             drawer.className = 'ava-quote-drawer';
-            drawer.innerHTML = 
+            drawer.innerHTML =
                 '<div class="ava-drawer-header">' +
-                    '<h2>Request Quotation</h2>' +
-                    '<button id="ava-drawer-close" class="ava-drawer-close">✕</button>' +
+                '<h2>Request Quotation</h2>' +
+                '<button id="ava-drawer-close" class="ava-drawer-close">✕</button>' +
                 '</div>' +
                 '<div id="ava-drawer-products" class="ava-drawer-products"></div>' +
                 '<div class="ava-drawer-footer">' +
-                    '<div class="ava-drawer-total">' +
-                        '<span>Total Selected Items:</span>' +
-                        '<span id="ava-total-count">0</span>' +
-                    '</div>' +
-                    '<form id="ava-inquiry-form" class="ava-inquiry-form">' +
-                        '<div class="ava-form-group">' +
-                            '<input type="text" id="ava-form-name" placeholder="Full Name *" required />' +
-                        '</div>' +
-                        '<div class="ava-form-group">' +
-                            '<input type="text" id="ava-form-business" placeholder="Business Name / Company *" required />' +
-                        '</div>' +
-                        '<div class="ava-form-group">' +
-                            '<input type="tel" id="ava-form-phone" placeholder="Phone Number *" required />' +
-                        '</div>' +
-                        '<div class="ava-form-group">' +
-                            '<input type="email" id="ava-form-email" placeholder="Email Address *" required />' +
-                        '</div>' +
-                        '<div class="ava-form-group">' +
-                            '<textarea id="ava-form-notes" placeholder="Additional Inquiry Notes (Specs, Custom dimensions, etc.)..." rows="3"></textarea>' +
-                        '</div>' +
-                        '<button type="submit" id="ava-submit-quote" class="ava-submit-quote">' +
-                            '<span>Send via WhatsApp</span>' +
-                        '</button>' +
-                    '</form>' +
+                '<div class="ava-drawer-total">' +
+                '<span>Total Selected Items:</span>' +
+                '<span id="ava-total-count">0</span>' +
+                '</div>' +
+                '<form id="ava-inquiry-form" class="ava-inquiry-form">' +
+                '<div class="ava-form-group">' +
+                '<input type="text" id="ava-form-name" placeholder="Full Name *" required />' +
+                '</div>' +
+                '<div class="ava-form-group">' +
+                '<input type="text" id="ava-form-business" placeholder="Business Name / Company *" required />' +
+                '</div>' +
+                '<div class="ava-form-group">' +
+                '<input type="tel" id="ava-form-phone" placeholder="Phone Number *" required />' +
+                '</div>' +
+                '<div class="ava-form-group">' +
+                '<input type="email" id="ava-form-email" placeholder="Email Address *" required />' +
+                '</div>' +
+                '<div class="ava-form-group">' +
+                '<textarea id="ava-form-notes" placeholder="Additional Inquiry Notes (Specs, Custom dimensions, etc.)..." rows="3"></textarea>' +
+                '</div>' +
+                '<button type="submit" id="ava-submit-quote" class="ava-submit-quote">' +
+                '<span>Send via WhatsApp</span>' +
+                '</button>' +
+                '</form>' +
                 '</div>';
             document.body.appendChild(drawer);
             document.getElementById('ava-drawer-close').addEventListener('click', closeDrawer);
@@ -1319,11 +1132,11 @@
             var launcher = document.createElement('div');
             launcher.id = 'ava-quote-launcher';
             launcher.className = 'ava-quote-launcher';
-            launcher.innerHTML = 
+            launcher.innerHTML =
                 '<div class="ava-launcher-icon">' +
-                    '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">' +
-                        '<path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 19H5V5H19V19ZM17 17H7V15H17V17ZM17 13H7V11H17V13ZM17 9H7V7H17V9Z" fill="white"/>' +
-                    '</svg>' +
+                '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+                '<path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 19H5V5H19V19ZM17 17H7V15H17V17ZM17 13H7V11H17V13ZM17 9H7V7H17V9Z" fill="white"/>' +
+                '</svg>' +
                 '</div>' +
                 '<div id="ava-launcher-badge" class="ava-launcher-badge">0</div>';
             document.body.appendChild(launcher);
@@ -1331,7 +1144,7 @@
         }
 
         // 4. Intercept clicks globally
-        document.body.addEventListener('click', function(e) {
+        document.body.addEventListener('click', function (e) {
             var btn = e.target.closest('.add-request-quote-button');
             if (btn) {
                 e.preventDefault();
@@ -1342,7 +1155,7 @@
 
         // Sync initial UI
         updateUI();
-     } // <-- PROPERLY CLOSE initQuoteEngine()
+    } // <-- PROPERLY CLOSE initQuoteEngine()
 
     var RESPONSIVE_CSS = `
         /* Prevent horizontal scroll globally */
@@ -1391,7 +1204,6 @@
         }
 
         /* 4. EXPANDED TOUCH TARGET BINDINGS (Lighthouse Target) */
-        .elementor-menu-toggle,
         .ava-drawer-close,
         .ava-qty-btn,
         .ava-remove-item,
@@ -1406,83 +1218,68 @@
             justify-content: center !important;
         }
 
-        /* 5. SEARCH MODAL OVERHAUL WITH FROSTED GLASS */
-        .bdt-modal-full.bdt-modal {
-            background: rgba(8, 15, 28, 0.95) !important;
-            backdrop-filter: blur(25px) saturate(180%) !important;
-            -webkit-backdrop-filter: blur(25px) saturate(180%) !important;
-            z-index: 9999999 !important;
-        }
-        .bdt-modal-full.bdt-modal .bdt-search-input {
-            color: #ffffff !important;
-            font-size: clamp(1.5rem, 5vw, 2.5rem) !important;
-            background: transparent !important;
-            border: none !important;
-            border-bottom: 2px solid rgba(64, 162, 216, 0.5) !important;
-            padding: 12px 0 !important;
-            text-align: center !important;
-            outline: none !important;
-            font-family: inherit !important;
-            width: 80% !important;
-            margin: 0 auto !important;
-        }
-        .bdt-modal-full.bdt-modal .bdt-modal-close-full {
-            color: #ffffff !important;
-            background: rgba(255, 255, 255, 0.08) !important;
-            border: 1px solid rgba(255, 255, 255, 0.15) !important;
-            border-radius: 50% !important;
-            width: 48px !important;
-            height: 48px !important;
-            top: 20px !important;
-            right: 20px !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            cursor: pointer !important;
-            transition: all 0.3s ease !important;
+        /* 5. COMPLETE SEARCH REMOVAL (Desktop, Mobile, Popups, Overlays) */
+        .elementor-widget-bdt-search,
+        .bdt-search-container,
+        .bdt-search-toggle,
+        .bdt-modal-full.bdt-modal,
+        [id^="modal-search-"],
+        .elementor-element-83c9a4d,
+        .elementor-element-84b6964,
+        .bdt-search-input {
+            display: none !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
+            opacity: 0 !important;
+            width: 0 !important;
+            height: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
         }
 
-        /* 6. LOGO & COMPANY NAME BRAND ALIGNMENT */
-        .custom-site-logo,
-        .custom-site-logo .elementor-widget-container,
-        #off-canvas-1aa01af .elementor-element-3120d15,
-        #off-canvas-1aa01af .elementor-element-3120d15 .elementor-widget-container {
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            width: auto !important;
-            max-width: none !important;
-            margin: 0 !important;
-        }
-        .custom-site-logo a,
-        #off-canvas-1aa01af .elementor-element-3120d15 a {
-            display: flex !important;
-            flex-direction: column !important;
-            align-items: center !important;
-            justify-content: center !important;
-            text-decoration: none !important;
-            width: 100% !important;
-        }
-        .custom-site-logo .ava-nav-logo,
-        #off-canvas-1aa01af .elementor-element-3120d15 img {
-            max-height: 42px !important;
-            width: auto !important;
-            object-fit: contain !important;
-            transition: all 0.3s ease !important;
-        }
-        .custom-site-logo .ava-logo-text,
-        #off-canvas-1aa01af .elementor-element-3120d15 .ava-logo-text {
-            font-size: 10px !important;
-            font-weight: 800 !important;
-            text-transform: uppercase !important;
-            letter-spacing: 1.5px !important;
-            color: #40A2D8 !important;
-            margin-top: 4px !important;
-            text-align: center !important;
-            white-space: nowrap !important;
-            transition: all 0.3s ease !important;
-            text-shadow: 0 0 10px rgba(64, 162, 216, 0.35) !important;
-            display: block !important;
+        /* 6. LOGO & COMPANY NAME BRAND ALIGNMENT (GATED TO MOBILE/TABLET ONLY TO RESTORE PC LAYOUT) */
+        @media (max-width: 1024px) {
+            .custom-site-logo,
+            .custom-site-logo .elementor-widget-container,
+            #off-canvas-1aa01af .elementor-element-3120d15,
+            #off-canvas-1aa01af .elementor-element-3120d15 .elementor-widget-container {
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                width: auto !important;
+                max-width: none !important;
+                margin: 0 !important;
+            }
+            .custom-site-logo a,
+            #off-canvas-1aa01af .elementor-element-3120d15 a {
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                justify-content: center !important;
+                text-decoration: none !important;
+                width: 100% !important;
+            }
+            .custom-site-logo .ava-nav-logo,
+            #off-canvas-1aa01af .elementor-element-3120d15 img {
+                max-height: 42px !important;
+                width: auto !important;
+                object-fit: contain !important;
+                transition: all 0.3s ease !important;
+            }
+            .custom-site-logo .ava-logo-text,
+            #off-canvas-1aa01af .elementor-element-3120d15 .ava-logo-text {
+                font-size: 10px !important;
+                font-weight: 800 !important;
+                text-transform: uppercase !important;
+                letter-spacing: 1.5px !important;
+                color: #40A2D8 !important;
+                margin-top: 4px !important;
+                text-align: center !important;
+                white-space: nowrap !important;
+                transition: all 0.3s ease !important;
+                text-shadow: 0 0 10px rgba(64, 162, 216, 0.35) !important;
+                display: block !important;
+            }
         }
         @media (max-width: 768px) {
             .custom-site-logo .ava-nav-logo,
@@ -1499,27 +1296,53 @@
 
         /* 7. DYNAMIC MOBILE HEADER RESPONSIVENESS & OVERLAP PREVENTION */
         @media (max-width: 1024px) {
-            .elementor-location-header .elementor-element-3f472c7 {
-                padding: 8px 16px !important;
-                display: flex !important;
-                flex-direction: row !important;
-                align-items: center !important;
-                justify-content: space-between !important;
-                flex-wrap: nowrap !important;
-                background: rgba(8, 15, 28, 0.85) !important;
-                backdrop-filter: blur(25px) saturate(180%) !important;
-                -webkit-backdrop-filter: blur(25px) saturate(180%) !important;
-                border-bottom: 1px solid rgba(120, 200, 255, 0.12) !important;
-                height: 70px !important;
+            .elementor-location-header {
                 position: fixed !important;
                 top: 0 !important;
                 left: 0 !important;
                 width: 100vw !important;
+                height: 70px !important;
+                background: rgba(8, 15, 28, 0.85) !important;
+                backdrop-filter: blur(25px) saturate(180%) !important;
+                -webkit-backdrop-filter: blur(25px) saturate(180%) !important;
+                border-bottom: 1px solid rgba(64, 162, 216, 0.2) !important;
+                box-shadow: 
+                    0 4px 30px rgba(0, 0, 0, 0.5), 
+                    0 0 15px rgba(64, 162, 216, 0.1) !important;
                 z-index: 99999 !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                box-sizing: border-box !important;
             }
-            
-            body {
-                padding-top: 70px !important;
+
+            .elementor-menu-toggle {
+                min-width: 48px !important;
+                min-height: 48px !important;
+                touch-action: manipulation !important;
+                display: inline-flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+            }
+
+            .elementor-location-header .elementor-element-3f472c7 {
+                display: flex !important;
+                flex-direction: row !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                width: 100% !important;
+                height: 100% !important;
+                padding: 0 16px !important;
+                margin: 0 !important;
+                background: transparent !important;
+                border: none !important;
+                box-shadow: none !important;
+                position: static !important;
+                backdrop-filter: none !important;
+                -webkit-backdrop-filter: none !important;
+                box-sizing: border-box !important;
             }
 
             .elementor-location-header .elementor-element-3f472c7 > .e-con-inner,
@@ -1534,10 +1357,21 @@
                 height: 100% !important;
                 margin: 0 !important;
                 background: transparent !important;
-                backdrop-filter: none !important;
-                -webkit-backdrop-filter: none !important;
                 border: none !important;
                 position: static !important;
+                box-sizing: border-box !important;
+            }
+
+            /* Shift content down below fixed top header on all subpages */
+            body:not(.home) {
+                padding-top: 70px !important;
+            }
+
+            /* Specific offset adjustment for homepage hero section overlay */
+            .home .elementor-element-757e007 {
+                margin-top: 0 !important;
+                height: calc(100vh - 70px) !important;
+                min-height: calc(100vh - 70px) !important;
             }
 
             /* Single-product overlap prevention under fixed header */
@@ -1552,52 +1386,154 @@
                 padding-top: 10px !important;
             }
 
+            /* 2. LOGO CONTAINER PILL SYSTEM */
             .elementor-location-header .elementor-element-82f49ac {
-                width: auto !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: flex-start !important;
                 flex: 0 0 auto !important;
+                width: auto !important;
+                height: 100% !important;
                 margin: 0 !important;
                 padding: 0 !important;
             }
-            
-            .elementor-location-header .elementor-element-5366156 {
+
+            /* SPECIFICITY WRAPPER TO PREVENT GENERIC WIDGET PADDING OVERRIDE */
+            .elementor-location-header .custom-site-logo.elementor-widget {
+                display: flex !important;
+                align-items: center !important;
+                justify-content: flex-start !important;
+                padding: 8px 18px !important; /* Generous top/bottom spacing inside the capsule */
+                margin: auto 0 !important; /* PERFECT VERTICAL CENTERING IN THE FIXED NAVBAR */
+                background: rgba(255, 255, 255, 0.03) !important;
+                border: 1px solid rgba(64, 162, 216, 0.25) !important;
+                border-radius: 100px !important;
+                box-shadow: 
+                    inset 0 1px 1px rgba(255, 255, 255, 0.05),
+                    0 4px 15px rgba(0, 0, 0, 0.35) !important;
+                box-sizing: border-box !important;
+                transition: all 0.3s ease !important;
+                max-width: 220px !important;
+                overflow: hidden !important;
+                height: auto !important;
+            }
+
+            .elementor-location-header .custom-site-logo.elementor-widget a {
+                display: flex !important;
+                flex-direction: row !important; /* Horizontal Pill */
+                align-items: center !important;
+                justify-content: flex-start !important;
+                gap: 8px !important;
+                width: 100% !important;
+                height: 100% !important;
+                text-decoration: none !important;
+            }
+
+            .elementor-location-header .custom-site-logo.elementor-widget .ava-nav-logo {
+                max-height: 28px !important;
                 width: auto !important;
-                flex: 0 0 auto !important;
+                object-fit: contain !important;
+                flex-shrink: 0 !important;
+                filter: drop-shadow(0 0 8px rgba(64, 162, 216, 0.4)) !important;
+            }
+
+            .elementor-location-header .custom-site-logo.elementor-widget .ava-logo-text {
+                font-size: 11px !important;
+                font-weight: 800 !important;
+                text-transform: uppercase !important;
+                letter-spacing: 0.5px !important;
+                color: #ffffff !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                white-space: nowrap !important;
+                overflow: visible !important;
+                text-shadow: 0 0 8px rgba(64, 162, 216, 0.4) !important;
+                display: block !important;
+                flex-shrink: 1 !important;
+            }
+
+            /* Remove default Elementor widget margins/paddings inside mobile header to guarantee vertical centering */
+            .elementor-location-header .elementor-widget {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            /* 3. SEARCH & HAMBURGER ROW LAYOUT */
+            .elementor-location-header .elementor-element-5366156 {
                 display: flex !important;
                 flex-direction: row !important;
                 align-items: center !important;
                 justify-content: flex-end !important;
-                gap: 12px !important;
+                flex: 0 0 auto !important;
+                width: auto !important;
+                height: 100% !important;
                 margin: 0 !important;
                 padding: 0 !important;
+                gap: 10px !important;
             }
 
             .elementor-nav-menu--main {
                 display: none !important;
             }
 
-            .elementor-element-83c9a4d,
-            .elementor-element-defd4a6 {
+            .elementor-location-header .elementor-element-83c9a4d,
+            .elementor-location-header .elementor-element-defd4a6 {
                 display: inline-flex !important;
                 align-items: center !important;
                 justify-content: center !important;
-                margin: 0 !important;
+                width: 44px !important;
+                height: 44px !important;
+                margin: auto 0 !important; /* Perfect vertical alignment */
                 padding: 0 !important;
+                box-sizing: border-box !important;
             }
 
-            .elementor-element-defd4a6 a.elementor-icon {
+            .elementor-location-header .elementor-element-83c9a4d a,
+            .elementor-location-header .elementor-element-defd4a6 a {
                 display: flex !important;
                 align-items: center !important;
                 justify-content: center !important;
-                width: 48px !important;
-                height: 48px !important;
+                width: 44px !important;
+                height: 44px !important;
                 border-radius: 50% !important;
                 background: rgba(255, 255, 255, 0.05) !important;
                 border: 1px solid rgba(255, 255, 255, 0.1) !important;
                 transition: all 0.3s ease !important;
+                box-sizing: border-box !important;
+            }
+
+            .elementor-location-header .elementor-element-83c9a4d a:hover,
+            .elementor-location-header .elementor-element-defd4a6 a:hover {
+                background: rgba(64, 162, 216, 0.15) !important;
+                border-color: rgba(64, 162, 216, 0.4) !important;
+                box-shadow: 0 0 10px rgba(64, 162, 216, 0.3) !important;
+            }
+
+            .elementor-location-header .elementor-element-83c9a4d svg,
+            .elementor-location-header .elementor-element-defd4a6 svg {
+                width: 20px !important;
+                height: 20px !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                display: block !important;
             }
         }
 
-        /* 8. PRE-ENGINEERED OFF-CANVAS DRAWERS */
+        /* 7b. MICRO-SCALING FOR SMALL MOBILE VIEWPORTS (UN-NESTED TO PREVENT PARSING ERRORS) */
+        @media (max-width: 360px) {
+            .elementor-location-header .custom-site-logo.elementor-widget {
+                padding: 6px 12px !important;
+                max-width: 175px !important;
+            }
+            .elementor-location-header .custom-site-logo.elementor-widget .ava-nav-logo {
+                max-height: 22px !important;
+            }
+            .elementor-location-header .custom-site-logo.elementor-widget .ava-logo-text {
+                font-size: 9px !important;
+            }
+        }
+
+        /* 8. PRE-ENGINEERED OFF-CANVAS DRAWERS - ADVANCED PREMIUM GLASSMORPHISM MENU */
         .elementor-element-1aa01af {
             display: block !important;
             width: 0 !important;
@@ -1622,7 +1558,7 @@
             z-index: 999999 !important;
             pointer-events: none !important;
             visibility: hidden !important;
-            transition: visibility 0.4s ease !important;
+            transition: visibility 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
         }
 
         #off-canvas-1aa01af.e-off-canvas.ava-open {
@@ -1630,17 +1566,18 @@
             visibility: visible !important;
         }
 
+        /* Full Screen Dark Overlay with premium backdrop blur */
         #off-canvas-1aa01af .e-off-canvas__overlay {
             position: absolute !important;
             top: 0 !important;
             left: 0 !important;
             width: 100vw !important;
             height: 100vh !important;
-            background: rgba(4, 8, 16, 0.5) !important;
-            backdrop-filter: blur(15px) !important;
-            -webkit-backdrop-filter: blur(15px) !important;
+            background: rgba(2, 8, 20, 0.75) !important;
+            backdrop-filter: blur(18px) !important;
+            -webkit-backdrop-filter: blur(18px) !important;
             opacity: 0 !important;
-            transition: opacity 0.4s ease !important;
+            transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
             pointer-events: none !important;
         }
 
@@ -1649,48 +1586,179 @@
             pointer-events: auto !important;
         }
 
+        /* Floating Luxury Glass Panel below the fixed navbar */
         #off-canvas-1aa01af .e-off-canvas__main {
-            position: absolute !important;
-            top: 0 !important;
-            left: -320px !important;
-            width: 320px !important;
-            max-width: 85vw !important;
-            height: 100vh !important;
-            background: rgba(8, 15, 28, 0.96) !important;
-            backdrop-filter: blur(35px) saturate(190%) !important;
-            -webkit-backdrop-filter: blur(35px) saturate(190%) !important;
-            border-right: 1px solid rgba(64, 162, 216, 0.25) !important;
-            box-shadow: 20px 0 60px rgba(0, 0, 0, 0.8) !important;
-            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
-            transform: translate3d(0, 0, 0) !important;
-            z-index: 1000000 !important;
-            overflow-y: auto !important;
-            padding: 30px 20px !important;
+            position: fixed !important;
+            top: 84px !important; /* 70px navbar height + 14px premium spacing gap */
+            left: 16px !important;
+            width: calc(100vw - 32px) !important;
+            max-width: min(340px, 82vw) !important;
+            height: auto !important;
+            max-height: calc(100vh - 104px) !important;
+            
+            /* Tesla/Vision Pro dark navy transparent gradient */
+            background: linear-gradient(135deg, rgba(8, 16, 32, 0.72) 0%, rgba(3, 8, 20, 0.88) 100%) !important;
+            backdrop-filter: blur(30px) saturate(190%) !important;
+            -webkit-backdrop-filter: blur(30px) saturate(190%) !important;
+            
+            /* Realistic Glass reflections and subtle border glows */
+            border: 1px solid rgba(64, 162, 216, 0.22) !important;
+            border-radius: 28px !important;
+            box-shadow: 
+                inset 0 1px 2px rgba(255, 255, 255, 0.1),
+                inset 0 -1px 2px rgba(0, 0, 0, 0.4),
+                0 20px 50px rgba(0, 0, 0, 0.65),
+                0 0 35px rgba(64, 162, 216, 0.08) !important;
+            
+            padding: 28px 24px !important; /* Increased padding from 24px 20px to 28px 24px for equal, clean breathing room */
             box-sizing: border-box !important;
             display: flex !important;
             flex-direction: column !important;
-            gap: 20px !important;
+            gap: 20px !important; /* Elegant vertical spacing between child components */
+            z-index: 1000000 !important;
+            overflow-y: auto !important;
+            
+            /* Premium slide-down & expansion spring-like animation */
+            opacity: 0 !important;
+            transform: translate3d(0, -20px, 0) scale(0.96) !important;
+            transition: 
+                transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+                opacity 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+            
+            /* Scrollbar hiding but functional scroll */
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        
+        #off-canvas-1aa01af .e-off-canvas__main::-webkit-scrollbar {
+            display: none !important;
         }
 
         #off-canvas-1aa01af.e-off-canvas.ava-open .e-off-canvas__main {
-            transform: translate3d(320px, 0, 0) !important;
+            opacity: 1 !important;
+            transform: translate3d(0, 0, 0) scale(1) !important;
         }
 
-        #off-canvas-1aa01af .e-off-canvas__main::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 2px;
-            height: 100%;
-            background: linear-gradient(to bottom, #40A2D8, #4AA485);
-            box-shadow: 0 0 15px rgba(64, 162, 216, 0.6);
+        /* Clean Elementor wrapper styling leaks override */
+        #off-canvas-1aa01af .e-off-canvas__content,
+        .elementor-310 .elementor-element.elementor-element-1aa01af .e-off-canvas__content {
+            background: transparent !important;
+            background-color: transparent !important;
+            box-shadow: none !important;
+            border: none !important;
+            
+            /* Hide duplicate scrollbars and overflow indicators */
+            overflow: visible !important;
+            overflow-y: visible !important;
+            scrollbar-width: none !important;
+            -ms-overflow-style: none !important;
+        }
+        #off-canvas-1aa01af .e-off-canvas__content::-webkit-scrollbar {
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
         }
 
+        /* Container Width Constraints to Prevent Overflow inside Off-Canvas Drawer */
+        #off-canvas-1aa01af .e-off-canvas__content,
+        #off-canvas-1aa01af .e-con,
+        #off-canvas-1aa01af .e-con-inner,
+        #off-canvas-1aa01af .elementor-widget-nav-menu,
+        #off-canvas-1aa01af .elementor-nav-menu--main {
+            width: 100% !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+        }
+
+        /* Logo Area Fix: Premium App Launcher Card */
+        #off-canvas-1aa01af .elementor-element-3120d15 {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: 100% !important;
+            max-width: none !important;
+            margin: 32px 0 0 0 !important; /* Shifted down to 32px to clear close button vertically */
+            padding: 0 !important;
+        }
+        
+        #off-canvas-1aa01af .elementor-element-3120d15 .elementor-widget-container {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: 100% !important;
+            max-width: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        #off-canvas-1aa01af .elementor-element-3120d15 a {
+            display: flex !important;
+            flex-direction: row !important; /* Horizontal layout */
+            align-items: center !important;
+            justify-content: center !important; /* Centered horizontal layout to balance logo */
+            gap: 8px !important; /* Reduced from 12px to 8px to prevent cramping */
+            width: 100% !important;
+            padding: 10px 12px !important; /* Optimized padding from 12px 16px to 10px 12px */
+            background: rgba(255, 255, 255, 0.03) !important;
+            border: 1px solid rgba(64, 162, 216, 0.15) !important;
+            border-radius: 20px !important;
+            box-shadow: 
+                inset 0 1px 1px rgba(255, 255, 255, 0.05),
+                0 6px 20px rgba(0, 0, 0, 0.3) !important;
+            box-sizing: border-box !important;
+            text-decoration: none !important;
+            transition: all 0.3s ease !important;
+        }
+        
+        #off-canvas-1aa01af .elementor-element-3120d15 a:hover {
+            background: rgba(64, 162, 216, 0.05) !important;
+            border-color: rgba(64, 162, 216, 0.3) !important;
+            box-shadow: 
+                inset 0 1px 1px rgba(255, 255, 255, 0.08),
+                0 8px 24px rgba(64, 162, 216, 0.15) !important;
+        }
+
+        #off-canvas-1aa01af .elementor-element-3120d15 img {
+            height: 26px !important; /* Balanced from 28px to 26px to clear box margins */
+            max-height: 26px !important;
+            width: auto !important;
+            object-fit: contain !important;
+            filter: drop-shadow(0 0 8px rgba(64, 162, 216, 0.4)) !important;
+            margin: 0 !important;
+            flex-shrink: 0 !important;
+        }
+
+        #off-canvas-1aa01af .elementor-element-3120d15 .ava-logo-text {
+            font-size: 10.5px !important; /* Reduced from 12px to 10.5px to guarantee fit */
+            font-weight: 800 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.5px !important; /* Reduced from 1.5px to 0.5px to shrink horizontal text length */
+            color: #ffffff !important;
+            margin: 0 !important;
+            text-align: center !important; /* Centered text layout */
+            text-shadow: 0 0 10px rgba(64, 162, 216, 0.4) !important;
+            display: block !important;
+            white-space: nowrap !important;
+            flex-shrink: 0 !important;
+        }
+
+        /* Hamburger button sync styles in header */
+        .elementor-location-header .elementor-element-defd4a6 a.elementor-active {
+            background: rgba(64, 162, 216, 0.18) !important;
+            border-color: rgba(64, 162, 216, 0.5) !important;
+            box-shadow: 0 0 15px rgba(64, 162, 216, 0.4) !important;
+        }
+        
+        .elementor-location-header .elementor-element-defd4a6 a.elementor-active svg {
+            transform: rotate(90deg) scale(0.9) !important;
+            color: #40A2D8 !important;
+        }
+
+        /* Circular Close Button on Panel */
         #off-canvas-1aa01af .elementor-element-7fd8dd0 {
             position: absolute !important;
-            top: 15px !important;
-            right: 15px !important;
+            top: 12px !important; /* Positioned slightly top from 24px to clear logo */
+            right: 12px !important; /* Positioned slightly right to align perfectly */
             z-index: 1000010 !important;
             margin: 0 !important;
         }
@@ -1699,97 +1767,296 @@
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
-            width: 44px !important;
-            height: 44px !important;
+            width: 32px !important;
+            height: 32px !important;
             border-radius: 50% !important;
-            background: rgba(255, 255, 255, 0.05) !important;
+            background: rgba(255, 255, 255, 0.04) !important;
             border: 1px solid rgba(255, 255, 255, 0.1) !important;
-            color: #ffffff !important;
-            transition: all 0.3s ease !important;
+            color: rgba(255, 255, 255, 0.6) !important;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+            box-sizing: border-box !important;
         }
         
+        #off-canvas-1aa01af .elementor-element-7fd8dd0 a.elementor-icon:hover {
+            background: rgba(255, 255, 255, 0.1) !important;
+            border-color: rgba(255, 255, 255, 0.25) !important;
+            color: #ffffff !important;
+            transform: scale(1.05) !important;
+        }
+        
+        #off-canvas-1aa01af .elementor-element-7fd8dd0 a.elementor-icon svg {
+            width: 14px !important;
+            height: 14px !important;
+        }
+        
+        /* Elegant Row Navigation Menu Items */
         #off-canvas-1aa01af .elementor-nav-menu--main {
             display: block !important;
             width: 100% !important;
-            margin-top: 40px !important;
+            margin-top: 10px !important;
         }
         
         #off-canvas-1aa01af ul.elementor-nav-menu {
             display: flex !important;
             flex-direction: column !important;
-            gap: 8px !important;
+            gap: 0 !important;
             padding: 0 !important;
             margin: 0 !important;
             list-style: none !important;
         }
+
+        #off-canvas-1aa01af ul.elementor-nav-menu li {
+            position: relative !important;
+            width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+            
+            /* Staggered animation state */
+            opacity: 0 !important;
+            transform: translate3d(0, 15px, 0) !important;
+            transition: 
+                transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+                opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        }
+        
+        #off-canvas-1aa01af ul.elementor-nav-menu li:last-child {
+            border-bottom: none !important;
+        }
+
+        /* Staggered CSS Delays for elegant load in */
+        #off-canvas-1aa01af.e-off-canvas.ava-open ul.elementor-nav-menu > li:nth-child(1) { transition-delay: 0.05s !important; opacity: 1 !important; transform: translate3d(0,0,0) !important; }
+        #off-canvas-1aa01af.e-off-canvas.ava-open ul.elementor-nav-menu > li:nth-child(2) { transition-delay: 0.10s !important; opacity: 1 !important; transform: translate3d(0,0,0) !important; }
+        #off-canvas-1aa01af.e-off-canvas.ava-open ul.elementor-nav-menu > li:nth-child(3) { transition-delay: 0.15s !important; opacity: 1 !important; transform: translate3d(0,0,0) !important; }
+        #off-canvas-1aa01af.e-off-canvas.ava-open ul.elementor-nav-menu > li:nth-child(4) { transition-delay: 0.20s !important; opacity: 1 !important; transform: translate3d(0,0,0) !important; }
+        #off-canvas-1aa01af.e-off-canvas.ava-open ul.elementor-nav-menu > li:nth-child(5) { transition-delay: 0.25s !important; opacity: 1 !important; transform: translate3d(0,0,0) !important; }
+        #off-canvas-1aa01af.e-off-canvas.ava-open ul.elementor-nav-menu > li:nth-child(6) { transition-delay: 0.30s !important; opacity: 1 !important; transform: translate3d(0,0,0) !important; }
+        #off-canvas-1aa01af.e-off-canvas.ava-open ul.elementor-nav-menu > li:nth-child(7) { transition-delay: 0.35s !important; opacity: 1 !important; transform: translate3d(0,0,0) !important; }
+        #off-canvas-1aa01af.e-off-canvas.ava-open ul.elementor-nav-menu > li:nth-child(8) { transition-delay: 0.40s !important; opacity: 1 !important; transform: translate3d(0,0,0) !important; }
         
         #off-canvas-1aa01af ul.elementor-nav-menu a {
-            display: block !important;
-            padding: 12px 16px !important;
-            color: #ffffff !important;
-            font-size: 16px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            padding: 14px 12px !important;
+            color: rgba(255, 255, 255, 0.75) !important;
+            font-size: 15px !important;
             font-weight: 600 !important;
+            letter-spacing: 0.3px !important;
             text-decoration: none !important;
-            border-radius: 12px !important;
-            background: rgba(255, 255, 255, 0.02) !important;
-            border: 1px solid rgba(255, 255, 255, 0.04) !important;
-            transition: all 0.3s ease !important;
+            background: transparent !important;
+            border: none !important;
+            border-radius: 0 !important;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+            position: relative !important;
+            overflow: hidden !important;
+        }
+
+        #off-canvas-1aa01af ul.elementor-nav-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 12px;
+            width: 0;
+            height: 1px;
+            background: linear-gradient(90deg, #40A2D8, transparent);
+            transition: width 0.3s ease;
         }
         
         #off-canvas-1aa01af ul.elementor-nav-menu a:hover,
-        #off-canvas-1aa01af ul.elementor-nav-menu li.current-menu-item > a,
-        #off-canvas-1aa01af ul.elementor-nav-menu li.menu-item-services-dropdown > a {
-            background: rgba(64, 162, 216, 0.12) !important;
-            border-color: rgba(64, 162, 216, 0.35) !important;
-            color: #40A2D8 !important;
-            box-shadow: 0 0 15px rgba(64, 162, 216, 0.1);
+        #off-canvas-1aa01af ul.elementor-nav-menu li.current-menu-item > a {
+            background: rgba(64, 162, 216, 0.06) !important;
+            color: #ffffff !important;
+            padding-left: 18px !important;
+            text-shadow: 0 0 10px rgba(64, 162, 216, 0.35) !important;
         }
         
+        #off-canvas-1aa01af ul.elementor-nav-menu a:hover::after,
+        #off-canvas-1aa01af ul.elementor-nav-menu li.current-menu-item > a::after {
+            width: calc(100% - 24px);
+        }
+        
+        /* Elegant Sub-Menu Styling */
         #off-canvas-1aa01af ul.sub-menu {
-            padding-left: 16px !important;
-            margin: 4px 0 8px 0 !important;
+            padding: 4px 0 !important;
+            margin: 4px 0 12px 12px !important;
             display: flex !important;
             flex-direction: column !important;
-            gap: 6px !important;
             list-style: none !important;
+            background: rgba(0, 0, 0, 0.2) !important;
+            border-left: 1px solid rgba(64, 162, 216, 0.2) !important;
+            border-radius: 6px !important;
+        }
+        
+        #off-canvas-1aa01af ul.sub-menu li {
+            border-bottom: none !important;
+            opacity: 1 !important;
+            transform: none !important;
         }
         
         #off-canvas-1aa01af ul.sub-menu a {
-            font-size: 14px !important;
-            font-weight: 500 !important;
-            padding: 10px 14px !important;
-            background: rgba(255, 255, 255, 0.01) !important;
-        }
-
-        #off-canvas-1aa01af .elementor-element-84b6964 {
-            width: 100% !important;
-            margin-top: 20px !important;
+            font-size: 13px !important;
+            font-weight: 550 !important;
+            padding: 8px 16px !important;
+            color: rgba(255, 255, 255, 0.55) !important;
+            background: transparent !important;
         }
         
-        #off-canvas-1aa01af .bdt-search-input {
-            width: 100% !important;
-            background: rgba(0, 0, 0, 0.4) !important;
-            border: 1px solid rgba(120, 200, 255, 0.15) !important;
-            color: #ffffff !important;
-            border-radius: 20px !important;
-            padding: 10px 16px !important;
-            font-size: 14px !important;
-            box-sizing: border-box !important;
-            outline: none !important;
+        #off-canvas-1aa01af ul.sub-menu a:hover {
+            color: #40A2D8 !important;
+            background: rgba(64, 162, 216, 0.04) !important;
+            padding-left: 20px !important;
         }
 
-        #off-canvas-1aa01af .bdt-search-input:focus {
-            border-color: rgba(64, 162, 216, 0.6) !important;
-            box-shadow: 0 0 10px rgba(64, 162, 216, 0.25) !important;
+        /* Premium Glass CTA Button Rebuild */
+        #off-canvas-1aa01af li.menu-item-quote-btn-injected {
+            border-bottom: none !important;
+            margin: 24px 0 0 0 !important; /* Reset top, left, right margins completely to prevent shifting */
+            padding: 0 16px !important; /* Mobile safe spacing inside the container */
+            width: 100% !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+            display: block !important;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            position: relative !important;
+            left: 0 !important;
+        }
+
+        #off-canvas-1aa01af li.menu-item-quote-btn-injected a.ava-premium-menu-quote-btn,
+        #off-canvas-1aa01af li.menu-item-quote-btn-injected a.add-request-quote-button {
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 10px !important; /* PERFECT ALIGNMENT GAP */
+            width: 100% !important;
+            max-width: 100% !important;
+            height: 54px !important; /* height: 54px */
+            border-radius: 18px !important; /* border-radius: 18px */
+            box-sizing: border-box !important;
+            text-decoration: none !important;
+            
+            /* Luxury dark blue glass gradient - reduced excessive brightness */
+            background: linear-gradient(135deg, rgba(10, 25, 50, 0.8) 0%, rgba(4, 12, 28, 0.95) 100%) !important;
+            border: 1px solid rgba(64, 162, 216, 0.28) !important; /* Subtle soft border */
+            color: #ffffff !important;
+            
+            font-size: 13.5px !important;
+            font-weight: 600 !important; /* semibold */
+            text-transform: uppercase !important;
+            letter-spacing: 0.5px !important; /* letter-spacing: 0.5px */
+            
+            /* Subtle inner highlight and soft cyan glow - luxury enterprise feel */
+            box-shadow: 
+                inset 0 1px 1px rgba(255, 255, 255, 0.08),
+                inset 0 -1px 1px rgba(0, 0, 0, 0.3),
+                0 4px 15px rgba(0, 0, 0, 0.45),
+                0 0 12px rgba(64, 162, 216, 0.12) !important;
+            
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+            cursor: pointer !important;
+            
+            /* Definitive positioning resets for centering */
+            padding: 0 20px !important;
+            margin: 0 !important;
+            position: relative !important;
+            overflow: hidden !important;
+            left: 0 !important;
+            right: 0 !important;
+            transform: none !important;
+        }
+
+        /* Eliminate any BDT or Elementor pseudo-elements pushing button content */
+        #off-canvas-1aa01af li.menu-item-quote-btn-injected a.ava-premium-menu-quote-btn::before,
+        #off-canvas-1aa01af li.menu-item-quote-btn-injected a.ava-premium-menu-quote-btn::after,
+        #off-canvas-1aa01af li.menu-item-quote-btn-injected a.add-request-quote-button::before,
+        #off-canvas-1aa01af li.menu-item-quote-btn-injected a.add-request-quote-button::after {
+            display: none !important;
+            content: none !important;
+            width: 0 !important;
+            height: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        /* Prevent parent theme styles from leaking padding/margin onto the button text */
+        #off-canvas-1aa01af li.menu-item-quote-btn-injected a.ava-premium-menu-quote-btn span,
+        #off-canvas-1aa01af li.menu-item-quote-btn-injected a.add-request-quote-button span {
+            display: inline-block !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            color: #ffffff !important;
+            font-size: 13.5px !important;
+            font-weight: 600 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.5px !important;
+            vertical-align: middle !important;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            float: none !important;
+        }
+
+        /* Icon: Vertically centered, size 16px, baseline-aligned */
+        #off-canvas-1aa01af li.menu-item-quote-btn-injected svg.ava-quote-btn-icon {
+            width: 16px !important;
+            height: 16px !important;
+            min-width: 16px !important;
+            min-height: 16px !important;
+            margin: 0 !important; /* Reset margin */
+            padding: 0 !important;
+            display: inline-block !important;
+            vertical-align: middle !important;
+            flex-shrink: 0 !important;
+            color: #ffffff !important;
+            fill: none !important;
+            filter: drop-shadow(0 0 4px rgba(64, 162, 216, 0.3)) !important;
+            transition: all 0.3s ease !important;
+        }
+
+        #off-canvas-1aa01af li.menu-item-quote-btn-injected a.ava-premium-menu-quote-btn:hover,
+        #off-canvas-1aa01af li.menu-item-quote-btn-injected a.add-request-quote-button:hover {
+            transform: translateY(-2px) !important;
+            background: linear-gradient(135deg, rgba(14, 34, 66, 0.85) 0%, rgba(6, 18, 38, 0.98) 100%) !important;
+            border-color: rgba(64, 162, 216, 0.45) !important;
+            
+            /* Premium hover animation & subtle glow effect */
+            box-shadow: 
+                inset 0 1px 1px rgba(255, 255, 255, 0.12),
+                0 6px 20px rgba(0, 0, 0, 0.45),
+                0 0 18px rgba(64, 162, 216, 0.25) !important;
         }
 
         /* 9. WOOCOMMERCE PRODUCT DETAILS AUTO-COLLAPSE & SPECTABLE OVERRIDES */
         @media (max-width: 768px) {
+            /* Collapse inner columns & paddings in the single product details template so card goes edge-to-edge */
+            body.single-product .elementor-location-single .e-con,
+            body.single-product .elementor-location-single .e-con-inner,
+            body.single-product .elementor-location-single .e-con-boxed,
+            body.single-product .elementor-location-single .e-con.e-child {
+                padding-left: 0px !important;
+                padding-right: 0px !important;
+                margin-left: 0px !important;
+                margin-right: 0px !important;
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+
+            /* Protect breadcrumbs, headings, and buttons from touching the physical screen edges */
+            body.single-product .elementor-location-single .elementor-widget-heading,
+            body.single-product .elementor-location-single .elementor-widget-breadcrumbs,
+            body.single-product .elementor-location-single .elementor-widget-yith-ywraq-button-quote {
+                padding-left: 16px !important;
+                padding-right: 16px !important;
+                box-sizing: border-box !important;
+            }
+
+            /* Collapse side gutters inside WooCommerce/Elementor panel wrappers */
             .single-product .e-n-tabs,
             .single-product .e-n-tabs-content,
             .single-product .e-n-tab-content,
-            .single-product .e-con-inner,
-            .single-product .e-con,
             .single-product .woocommerce-tabs,
             .single-product .panel,
             .single-product .entry-content,
@@ -1805,51 +2072,133 @@
                 width: 100% !important;
                 box-sizing: border-box !important;
             }
-            
-            .single-product table.shop_attributes {
+
+            /* Technical spec sheets: stretch edge-to-edge horizontally on mobile devices */
+            body.single-product .elementor-widget-n-tabs,
+            body.single-product .elementor-widget[class*="elementor-widget-n-tabs"] {
+                padding: 16px 12px !important;
+                margin: 20px 0 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+                border-left: none !important;
+                border-right: none !important;
+                border-radius: 0px !important;
+                background: rgba(13, 13, 17, 0.45) !important;
+            }
+
+            body.single-product .e-n-tabs-content,
+            body.single-product .e-n-tabs-content .e-con {
+                padding: 0 !important;
+                margin: 0 !important;
+                width: 100% !important;
+            }
+
+            .single-product table, 
+            .single-product table tbody,
+            .e-n-tabs-content table,
+            .e-n-tabs-content tbody {
                 display: block !important;
                 width: 100% !important;
-                margin: 20px 0 !important;
-                border-collapse: collapse !important;
-                background: rgba(10, 18, 30, 0.4) !important;
-                border: 1px solid rgba(120, 200, 255, 0.1) !important;
-                border-radius: 12px !important;
-                padding: 10px !important;
                 box-sizing: border-box !important;
             }
-            .single-product table.shop_attributes tr {
+            
+            .single-product table tr,
+            .e-n-tabs-content table tr {
                 display: flex !important;
+                flex-direction: row !important;
                 justify-content: space-between !important;
-                align-items: center !important;
+                align-items: baseline !important;
+                width: 100% !important;
+                box-sizing: border-box !important;
+                padding: 12px 6px !important;
                 border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
-                padding: 6px 0 !important;
+                gap: 12px !important;
+                overflow: hidden !important;
             }
-            .single-product table.shop_attributes tr:last-child {
+            
+            .single-product table tr:last-child,
+            .e-n-tabs-content table tr:last-child {
                 border-bottom: none !important;
             }
-            .single-product table.shop_attributes th,
-            .single-product table.shop_attributes td {
-                display: inline-block !important;
-                padding: 10px 8px !important;
-                font-size: 13px !important;
+            
+            .single-product table td,
+            .single-product table th,
+            .e-n-tabs-content table td {
                 box-sizing: border-box !important;
-                white-space: normal !important;
-                word-break: break-word !important;
-            }
-            .single-product table.shop_attributes th {
-                width: 45% !important;
-                text-align: left !important;
-                color: rgba(255, 255, 255, 0.6) !important;
-                font-weight: 600 !important;
+                padding: 0 !important;
                 background: transparent !important;
                 border: none !important;
             }
-            .single-product table.shop_attributes td {
-                width: 55% !important;
+            
+            /* Left Column (Parameter Name) */
+            .single-product table td:first-child,
+            .single-product table th:first-child,
+            .e-n-tabs-content table td:first-child {
+                display: block !important;
+                text-align: left !important;
+                flex: 1 1 auto !important;
+                min-width: 110px !important;
+                max-width: 160px !important;
+                font-weight: 700 !important;
+                color: var(--ava-brand, #40A2D8) !important;
+                text-transform: uppercase !important;
+                letter-spacing: 0.03em !important;
+                font-size: 11.5px !important;
+                white-space: normal !important;
+                word-break: normal !important;
+                overflow-wrap: break-word !important;
+                line-height: 1.35 !important;
+                order: 1 !important;
+            }
+            
+            /* Cell 3: Value (middle in visual layout, right aligned) */
+            .single-product table td:nth-child(3),
+            .single-product table th:nth-child(3),
+            .e-n-tabs-content table td:nth-child(3) {
+                display: block !important;
                 text-align: right !important;
-                color: #ffffff !important;
+                flex: 1 1 auto !important;
                 font-weight: 500 !important;
+                color: #ffffff !important;
+                font-family: var(--ava-font, 'Outfit', sans-serif) !important;
+                font-size: 12.5px !important;
+                white-space: normal !important;
+                word-break: normal !important;
+                overflow-wrap: break-word !important;
+                order: 2 !important;
+                margin-left: auto !important;
+                line-height: 1.35 !important;
                 border: none !important;
+            }
+            
+            /* Cell 2: Unit (rightmost in visual layout, right aligned, slightly faded) */
+            .single-product table td:nth-child(2),
+            .single-product table th:nth-child(2),
+            .e-n-tabs-content table td:nth-child(2) {
+                display: block !important;
+                text-align: right !important;
+                flex: 0 0 auto !important;
+                font-weight: 400 !important;
+                color: rgba(255, 255, 255, 0.6) !important;
+                font-family: var(--ava-font, 'Outfit', sans-serif) !important;
+                font-size: 11.5px !important;
+                white-space: nowrap !important;
+                order: 3 !important;
+                margin-left: 4px !important;
+                line-height: 1.35 !important;
+                border: none !important;
+            }
+            
+            /* Collapse empty unit cells so they don't eat space */
+            .single-product table td:nth-child(2):empty,
+            .single-product table th:nth-child(2):empty,
+            .e-n-tabs-content table td:nth-child(2):empty {
+                display: none !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 0 !important;
+                flex: 0 0 0px !important;
             }
         }
 
@@ -1942,18 +2291,34 @@
             .e-con-inner,
             .e-con {
                 flex-direction: column !important;
-                padding-left: 16px !important;
-                padding-right: 16px !important;
                 box-sizing: border-box !important;
                 width: 100% !important;
             }
 
+            .e-con.e-parent, 
+            .elementor-section.elementor-top-section,
+            .section-xxl, .section-xl, .section-l, .section-m, .section-s, .section-xs, .section-xxs {
+                padding-left: 12px !important;
+                padding-right: 12px !important;
+            }
+
+            .e-con-inner,
+            .e-con.e-child,
+            .elementor-container,
+            .elementor-widget-wrap {
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+            }
+
             /* PRODUCT CARDS & LOOP GRIDS RESPONSIVENESS */
+            .elementor-element-cf8cf0e .swiper-slide .elementor-element-cc6de85,
+            .elementor-element-cf8cf0e .elementor-1122 .elementor-element.elementor-element-cc6de85,
+            .e-loop-item .elementor-element-cc6de85,
             .elementor-element-cc6de85, 
             .woocommerce ul.products li.product, 
             .e-loop-item,
             .glowing-card {
-                padding: 20px !important;
+                padding: 24px 18px !important;
                 margin: 0 auto 20px auto !important;
                 width: 100% !important;
                 max-width: 100% !important;
@@ -1962,6 +2327,108 @@
                 overflow: hidden !important;
                 height: auto !important;
                 min-height: unset !important;
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                justify-content: flex-start !important;
+            }
+
+            .elementor-element-cc6de85 > .e-con-inner,
+            .woocommerce ul.products li.product .e-con-inner {
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                justify-content: flex-start !important;
+                width: 100% !important;
+                gap: 0 !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                box-sizing: border-box !important;
+            }
+
+            /* Product Image Showcase Box & Alignment */
+            .elementor-element-cf8cf0e .swiper-slide .elementor-element-8486354,
+            .elementor-element-cc6de85 .elementor-element-8486354,
+            .woocommerce ul.products li.product .elementor-element-8486354 {
+                width: 100% !important;
+                height: 180px !important;
+                min-height: 180px !important;
+                margin: 0 0 16px 0 !important;
+                padding: 0 !important;
+                box-sizing: border-box !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                -webkit-box-reflect: none !important;
+                animation: none !important;
+                box-shadow: none !important;
+            }
+
+            /* Disable all spotlight, cone, and underglow gradients on image container on mobile */
+            .elementor-element-cf8cf0e .swiper-slide .elementor-element-8486354::before,
+            .elementor-element-cf8cf0e .swiper-slide .elementor-element-8486354::after,
+            .elementor-element-cc6de85 .elementor-element-8486354::before,
+            .elementor-element-cc6de85 .elementor-element-8486354::after,
+            .woocommerce ul.products li.product .elementor-element-8486354::before,
+            .woocommerce ul.products li.product .elementor-element-8486354::after {
+                display: none !important;
+                content: none !important;
+                background: transparent !important;
+            }
+
+            .elementor-element-cc6de85 .elementor-element-8486354 img,
+            .woocommerce ul.products li.product img {
+                width: 100% !important;
+                height: 100% !important;
+                max-height: 180px !important;
+                object-fit: contain !important;
+                object-position: center !important;
+                margin: 0 !important;
+                padding: 10px !important;
+                box-sizing: border-box !important;
+            }
+
+            /* Details & Title Alignment */
+            .elementor-element-cf8cf0e .swiper-slide .elementor-element-4e752a1,
+            .elementor-element-cc6de85 .elementor-element-4e752a1,
+            .woocommerce ul.products li.product .elementor-element-4e752a1 {
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                justify-content: center !important;
+                box-sizing: border-box !important;
+                height: auto !important;
+                max-height: none !important;
+                min-height: unset !important;
+            }
+
+            .elementor-element-cc6de85 .elementor-element-aec3a92,
+            .woocommerce ul.products li.product .elementor-element-aec3a92 {
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                display: block !important;
+                text-align: center !important;
+            }
+
+            .elementor-element-cc6de85 .elementor-element-aec3a92 .elementor-heading-title,
+            .woocommerce ul.products li.product .elementor-heading-title {
+                font-size: clamp(14px, 4.5vw, 17px) !important;
+                color: #ffffff !important;
+                font-weight: 600 !important;
+                text-align: center !important;
+                margin: 4px 0 16px 0 !important;
+                padding: 0 8px !important;
+                white-space: normal !important;
+                word-wrap: break-word !important;
+                overflow-wrap: break-word !important;
+                line-height: 1.3 !important;
+                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5) !important;
             }
             
             /* Prevents clipping and scroll inside loop cards */
@@ -1986,8 +2453,9 @@
             .e-loop-item .button-container {
                 display: flex !important;
                 flex-direction: column !important;
-                gap: 12px !important;
+                gap: 8px !important;
                 align-items: center !important;
+                justify-content: center !important;
                 width: 100% !important;
                 margin-top: 15px !important;
             }
@@ -2004,14 +2472,22 @@
                 justify-content: center !important;
                 align-items: center !important;
                 box-sizing: border-box !important;
-                margin: 4px 0 !important;
-                padding: 12px 20px !important;
-                font-size: 13px !important;
-                white-space: normal !important;
-                text-align: center !important;
-                border-radius: 30px !important;
-                text-overflow: clip !important;
-                height: auto !important;
+                margin: 0 !important;
+                padding: 0 16px !important;
+                border-radius: 12px !important;
+                font-size: 12.5px !important;
+                font-weight: 700 !important;
+                text-transform: uppercase !important;
+                letter-spacing: 0.5px !important;
+                height: 44px !important;
+                min-height: 44px !important;
+            }
+
+            /* Swiper arrow layout and breathing room overrides */
+            .elementor-element-cf8cf0e .swiper-container,
+            .elementor-element-cf8cf0e .swiper {
+                padding: 0 16px !important;
+                overflow: visible !important;
             }
 
             /* CAROUSEL & SWIPER SPATIAL FIXES */
@@ -2052,6 +2528,17 @@
                 margin-bottom: 20px !important;
                 float: none !important;
             }
+            .single-product .ava-premium-image-wrapper {
+                height: 320px !important;
+            }
+            .single-product .ava-fallback-placeholder {
+                padding: 20px !important;
+            }
+            .single-product .ava-fallback-placeholder svg {
+                width: 80px !important;
+                height: 80px !important;
+                margin-bottom: 12px !important;
+            }
             .single-product .summary {
                 width: 100% !important;
                 float: none !important;
@@ -2071,57 +2558,103 @@
                 justify-content: center !important;
                 display: flex !important;
             }
+            /* Compact spec table styles applied above */
 
             /* ========== HEADER PROTECTION (must be LAST to win cascade) ========== */
-            .elementor-location-header .elementor-element-3f472c7 {
-                display: flex !important;
-                flex-direction: row !important;
-                flex-wrap: nowrap !important;
-                align-items: center !important;
-                justify-content: space-between !important;
-                padding: 8px 16px !important;
-                height: 70px !important;
+            @media (max-width: 1024px) {
+                .elementor-location-header {
+                    position: fixed !important;
+                    top: 0 !important;
+                    left: 0 !important;
+                    width: 100vw !important;
+                    height: 70px !important;
+                    background: rgba(8, 15, 28, 0.85) !important;
+                    backdrop-filter: blur(25px) saturate(180%) !important;
+                    -webkit-backdrop-filter: blur(25px) saturate(180%) !important;
+                    border-bottom: 1px solid rgba(64, 162, 216, 0.2) !important;
+                    box-shadow: 
+                        0 4px 30px rgba(0, 0, 0, 0.5), 
+                        0 0 15px rgba(64, 162, 216, 0.1) !important;
+                    z-index: 99999 !important;
+                    display: flex !important;
+                    align-items: center !important;
+                    justify-content: center !important;
+                    padding: 0 !important;
+                    margin: 0 !important;
+                    box-sizing: border-box !important;
+                }
+                .elementor-location-header .elementor-element-3f472c7 {
+                    display: flex !important;
+                    flex-direction: row !important;
+                    flex-wrap: nowrap !important;
+                    align-items: center !important;
+                    justify-content: space-between !important;
+                    padding: 0 16px !important;
+                    width: 100% !important;
+                    height: 100% !important;
+                    margin: 0 !important;
+                    background: transparent !important;
+                    border: none !important;
+                    box-shadow: none !important;
+                    position: static !important;
+                    backdrop-filter: none !important;
+                    -webkit-backdrop-filter: none !important;
+                    box-sizing: border-box !important;
+                }
+                .elementor-location-header .elementor-element-3f472c7 > .e-con-inner,
+                .elementor-location-header .elementor-element-3f472c7 > .elementor-container {
+                    display: flex !important;
+                    flex-direction: row !important;
+                    flex-wrap: nowrap !important;
+                    align-items: center !important;
+                    justify-content: space-between !important;
+                    padding: 0 !important;
+                    width: 100% !important;
+                    height: 100% !important;
+                    margin: 0 !important;
+                    background: transparent !important;
+                    border: none !important;
+                    position: static !important;
+                    box-sizing: border-box !important;
+                }
+                .elementor-location-header .elementor-element-82f49ac {
+                    flex: 0 0 auto !important;
+                    width: auto !important;
+                    padding: 0 !important;
+                    margin: 0 !important;
+                    display: flex !important;
+                    align-items: center !important;
+                    height: 100% !important;
+                }
+                .elementor-location-header .elementor-element-5366156 {
+                    flex: 0 0 auto !important;
+                    width: auto !important;
+                    display: flex !important;
+                    flex-direction: row !important;
+                    align-items: center !important;
+                    gap: 10px !important;
+                    padding: 0 !important;
+                    margin: 0 !important;
+                    height: 100% !important;
+                }
+                .elementor-location-header .elementor-element-83c9a4d,
+                .elementor-location-header .elementor-element-defd4a6 {
+                    display: inline-flex !important;
+                    align-items: center !important;
+                    justify-content: center !important;
+                    width: 44px !important;
+                    height: 44px !important;
+                    padding: 0 !important;
+                    margin: auto 0 !important; /* Perfect vertical alignment */
+                }
+                .elementor-location-header .elementor-nav-menu--main {
+                    display: none !important;
+                }
             }
-            .elementor-location-header .elementor-element-3f472c7 > .e-con-inner,
-            .elementor-location-header .elementor-element-3f472c7 > .elementor-container,
-            .elementor-location-header .elementor-element-3f472c7 > .elementor-element-82f49ac,
-            .elementor-location-header .elementor-element-3f472c7 > .elementor-element-5366156 {
-                display: flex !important;
-                flex-direction: row !important;
-                flex-wrap: nowrap !important;
-                align-items: center !important;
-                justify-content: space-between !important;
-                padding: 0 !important;
-                width: auto !important;
-                height: auto !important;
-            }
-            .elementor-location-header .elementor-element-82f49ac {
-                flex: 0 0 auto !important;
-                width: auto !important;
-                padding: 0 !important;
-                margin: 0 !important;
-            }
-            .elementor-location-header .elementor-element-5366156 {
-                flex: 0 0 auto !important;
-                width: auto !important;
-                display: flex !important;
-                flex-direction: row !important;
-                align-items: center !important;
-                gap: 8px !important;
-                padding: 0 !important;
-                margin: 0 !important;
-            }
-            .elementor-location-header .elementor-element-83c9a4d,
-            .elementor-location-header .elementor-element-defd4a6 {
-                display: inline-flex !important;
-                width: auto !important;
-                padding: 0 !important;
-                margin: 0 !important;
-            }
-            .elementor-location-header .elementor-nav-menu--main {
+
+            .wpb_category_n_menu_accordion span.wpb-submenu-indicator {
                 display: none !important;
             }
-        }
     `;
 
     function initResponsiveStyles() {
@@ -2138,7 +2671,7 @@
         mobileMenus.forEach(function (mobileMenu) {
             // Check if we already restructured it
             if (mobileMenu.querySelector('.menu-item-services-dropdown')) return;
-            
+
             // Get the flat items we want to group by scanning href destinations (100% robust fallback)
             var afterSalesLi = Array.from(mobileMenu.querySelectorAll('li')).find(function (li) {
                 var a = li.querySelector('a');
@@ -2152,26 +2685,26 @@
                 var a = li.querySelector('a');
                 return a && (a.getAttribute('href') || '').indexOf('/technical-maintenance-support/') !== -1;
             });
-            
+
             if (!afterSalesLi && !designLi && !technicalLi) return;
-            
+
             // Create the Services parent menu item
             var servicesLi = document.createElement('li');
             servicesLi.className = 'menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-services-dropdown';
-            
+
             var servicesA = document.createElement('a');
             servicesA.href = '#';
             servicesA.className = 'elementor-item elementor-item-anchor';
             servicesA.innerHTML = 'Services <span class="sub-menu-toggle-icon" style="font-size:9px; margin-left:4px;">▼</span>';
             servicesLi.appendChild(servicesA);
-            
+
             var subMenuUl = document.createElement('ul');
             subMenuUl.className = 'sub-menu';
             subMenuUl.style.display = 'none';
             subMenuUl.style.paddingLeft = '15px';
             subMenuUl.style.marginTop = '5px';
             subMenuUl.style.listStyle = 'none';
-            
+
             // Move the items into the submenu
             if (designLi) {
                 subMenuUl.appendChild(designLi);
@@ -2182,13 +2715,13 @@
             if (technicalLi) {
                 subMenuUl.appendChild(technicalLi);
             }
-            
+
             servicesLi.appendChild(subMenuUl);
-            
+
             // Insert Services parent item before the first service item
             var insertBeforeLi = designLi || afterSalesLi || technicalLi;
             mobileMenu.insertBefore(servicesLi, insertBeforeLi);
-            
+
             // Add accordion click toggle logic
             servicesA.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -2205,36 +2738,20 @@
         mobileMenus.forEach(function (mobileMenu) {
             // Check if we already injected it
             if (mobileMenu.querySelector('.menu-item-quote-btn-injected')) return;
-            
+
             var quoteLi = document.createElement('li');
             quoteLi.className = 'menu-item menu-item-quote-btn-injected';
-            quoteLi.style.marginTop = '15px';
-            quoteLi.style.listStyle = 'none';
-            
+
             var quoteBtn = document.createElement('a');
             quoteBtn.href = '#';
-            quoteBtn.className = 'elementor-button add-request-quote-button';
-            quoteBtn.style.display = 'flex';
-            quoteBtn.style.alignItems = 'center';
-            quoteBtn.style.justifyContent = 'center';
-            quoteBtn.style.background = 'linear-gradient(135deg, #40A2D8, #4AA485) !important';
-            quoteBtn.style.color = '#ffffff !important';
-            quoteBtn.style.border = 'none !important';
-            quoteBtn.style.borderRadius = '30px';
-            quoteBtn.style.padding = '12px 24px';
-            quoteBtn.style.fontWeight = '700';
-            quoteBtn.style.fontSize = '14px';
-            quoteBtn.style.textTransform = 'uppercase';
-            quoteBtn.style.letterSpacing = '0.5px';
-            quoteBtn.style.width = '100%';
-            quoteBtn.style.boxSizing = 'border-box';
-            quoteBtn.style.cursor = 'pointer';
-            
-            quoteBtn.innerHTML = '<span>Request Quote</span>';
+            quoteBtn.className = 'ava-premium-menu-quote-btn';
+
+            // Rebuilt premium centered layout with embedded modern document request icon
+            quoteBtn.innerHTML = '<svg class="ava-quote-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; flex-shrink: 0; display: inline-block; vertical-align: middle;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg><span>Request Quote</span>';
             quoteLi.appendChild(quoteBtn);
             mobileMenu.appendChild(quoteLi);
-            
-            quoteBtn.addEventListener('click', function(e) {
+
+            quoteBtn.addEventListener('click', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
                 // Close mobile menu drawer first
@@ -2246,7 +2763,7 @@
                     if (drawer) drawer.classList.remove('ava-open');
                 }
                 // Open quote request cart drawer
-                setTimeout(function() {
+                setTimeout(function () {
                     if (typeof openDrawer === 'function') {
                         openDrawer();
                     } else {
@@ -2277,10 +2794,10 @@
                     var hasImages = panel.querySelectorAll('img').length > 0;
                     var hasIframe = panel.querySelectorAll('iframe').length > 0;
                     var hasTable = panel.querySelectorAll('table').length > 0;
-                    var hasElements = panel.children.length > 0 && Array.from(panel.children).some(function(child) {
+                    var hasElements = panel.children.length > 0 && Array.from(panel.children).some(function (child) {
                         return child.innerText.trim().length > 0 || child.querySelectorAll('img, iframe, table, svg, button, a').length > 0;
                     });
-                    
+
                     if (text === '' && !hasImages && !hasIframe && !hasTable && !hasElements) {
                         title.style.display = 'none';
                         panel.style.display = 'none';
@@ -2289,7 +2806,7 @@
                     }
                 }
             });
-            
+
             // If the currently active tab title got hidden, activate the first visible one instead!
             var visibleTitles = Array.from(titles).filter(function (t) { return t.style.display !== 'none'; });
             var activeTitle = container.querySelector('.e-n-tab-title[aria-selected="true"], ul.tabs li.active');
@@ -2298,14 +2815,14 @@
                 firstVisible.setAttribute('aria-selected', 'true');
                 firstVisible.classList.add('e-active');
                 firstVisible.setAttribute('tabindex', '0');
-                
+
                 var newControlsId = firstVisible.getAttribute('aria-controls');
                 var newPanel = document.getElementById(newControlsId);
                 if (newPanel) {
                     newPanel.classList.add('e-active');
                     newPanel.style.display = '';
                 }
-                
+
                 var oldControlsId = activeTitle.getAttribute('aria-controls');
                 var oldPanel = document.getElementById(oldControlsId);
                 if (oldPanel) {
@@ -2330,14 +2847,14 @@
         document.body.classList.add('ava-menu-active');
         document.body.style.overflow = 'hidden';
         document.body.style.height = '100vh';
-        
+
         var drawer = document.getElementById('off-canvas-1aa01af');
         if (drawer) {
             drawer.classList.add('ava-open');
             drawer.setAttribute('aria-hidden', 'false');
             drawer.removeAttribute('inert');
         }
-        
+
         var toggles = document.querySelectorAll('.elementor-element-defd4a6 a.elementor-icon, .elementor-menu-toggle');
         toggles.forEach(function (t) {
             t.classList.add('elementor-active');
@@ -2354,14 +2871,14 @@
         document.body.classList.remove('ava-menu-active');
         document.body.style.overflow = '';
         document.body.style.height = '';
-        
+
         var drawer = document.getElementById('off-canvas-1aa01af');
         if (drawer) {
             drawer.classList.remove('ava-open');
             drawer.setAttribute('aria-hidden', 'true');
             drawer.setAttribute('inert', '');
         }
-        
+
         var toggles = document.querySelectorAll('.elementor-element-defd4a6 a.elementor-icon, .elementor-menu-toggle');
         toggles.forEach(function (t) {
             t.classList.remove('elementor-active');
@@ -2422,13 +2939,36 @@
         }
     }
 
+    function harmonizeProductLinks() {
+        var links = document.querySelectorAll('a[href="/products/"], a[href="/products"]');
+        links.forEach(function(link) {
+            link.setAttribute('href', '/shop/');
+        });
+    }
+
     /* ================================================================
        BOOTUX SPA INTERFACE CHOREOGRAPHY
        ================================================================ */
     function boot() {
+        // Defensive Mobile Menu Reset on page load to prevent a stuck state
+        try {
+            document.body.classList.remove('ava-menu-active');
+            document.body.style.overflow = '';
+            document.body.style.height = '';
+            var drawer = document.getElementById('off-canvas-1aa01af');
+            if (drawer) {
+                drawer.classList.remove('ava-open');
+                drawer.setAttribute('aria-hidden', 'true');
+                drawer.setAttribute('inert', '');
+            }
+        } catch (e) {
+            console.warn('[AVA] Defensive menu reset failed:', e);
+        }
+
+        try { harmonizeProductLinks(); } catch (e) { console.warn('[AVA] Harmonize product links failed:', e); }
         try { initResponsiveStyles(); } catch (e) { console.warn('[AVA] Responsive Styles failed:', e); }
         try { initAtmosphere(); } catch (e) { console.warn('[AVA] Atmosphere failed:', e); }
-        try { initSpatialTelemetry(); } catch (e) { console.warn('[AVA] Spatial Telemetry failed:', e); }
+        // try { initSpatialTelemetry(); } catch (e) { console.warn('[AVA] Spatial Telemetry failed:', e); }
         try { initCardSpotlight(); } catch (e) { console.warn('[AVA] Spotlight failed:', e); }
         try { initNavbarScroll(); } catch (e) { console.warn('[AVA] Navbar failed:', e); }
         try { initScrollReveal(); } catch (e) { console.warn('[AVA] Reveal failed:', e); forceRevealAll(); }

@@ -63,7 +63,7 @@ img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
 /*# sourceURL=woocommerce-inline-inline-css */
 </style>
 <link rel='stylesheet' id='hello-elementor-css' href='/wp-content/themes/hello-elementor/assets/css/reset.css?ver=3.4.9' media='all' />
-<link rel='stylesheet' id='hello-elementor-theme-style-css' href='/wp-content/themes/hello-elementor/assets/css/theme.css?ver=3.4.9' media='all' />
+<link rel='stylesheet' id='hello-elementor-theme-style-css' href='/wp-content/themes/hello-elementor/assets/css/theme.css?ver=3.4.20' media='all' />
 <link rel='stylesheet' id='hello-elementor-header-footer-css' href='/wp-content/themes/hello-elementor/assets/css/header-footer.css?ver=3.4.9' media='all' />
 <link rel='stylesheet' id='elementor-frontend-css' href='/wp-content/plugins/elementor/assets/css/frontend.min.css?ver=3.34.1' media='all' />
 <link rel='stylesheet' id='elementor-post-8-css' href='/wp-content/uploads/elementor/css/post-8.css?ver=1779357666' media='all' />
@@ -680,13 +680,101 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 				@media (max-width: 768px) {
 					.contact-grid-container {
 						grid-template-columns: 1fr !important;
-						margin-top: 20px !important;
+						margin: 10px auto 40px auto !important;
+						padding: 0 12px !important;
+						width: 100% !important;
+						max-width: 100% !important;
+						box-sizing: border-box !important;
+						gap: 24px !important;
+					}
+					.contact-grid-container > div:first-of-type {
+						width: 100% !important;
+						max-width: 100% !important;
+						gap: 20px !important;
+						box-sizing: border-box !important;
+					}
+					.contact-grid-container .glowing-card {
+						padding: 24px 16px !important;
+						width: 100% !important;
+						box-sizing: border-box !important;
+					}
+					.contact-grid-container .glowing-card h2 {
+						font-size: 1.5rem !important;
+						margin-bottom: 15px !important;
+					}
+					.contact-grid-container .glowing-card h3 {
+						font-size: 1.1rem !important;
+					}
+					.contact-grid-container .glowing-card div {
+						margin-bottom: 20px !important;
+						gap: 12px !important;
+					}
+					.contact-grid-container .glowing-card p {
+						font-size: 0.95rem !important;
+					}
+					.contact-grid-container .glowing-card a {
+						padding: 10px 16px !important;
+						font-size: 0.9rem !important;
+					}
+					/* Nested Quick Support grid stacking */
+					.contact-grid-container > div:first-of-type > div:last-of-type {
+						grid-template-columns: 1fr !important;
+						gap: 12px !important;
+						width: 100% !important;
+						box-sizing: border-box !important;
+					}
+					.contact-grid-container > div:first-of-type > div:last-of-type > div {
+						padding: 16px !important;
+						width: 100% !important;
+						box-sizing: border-box !important;
+					}
+					.contact-grid-container > div:last-of-type {
+						padding: 24px 16px !important;
+						width: 100% !important;
+						box-sizing: border-box !important;
+					}
+					.contact-grid-container > div:last-of-type h2 {
+						font-size: 1.5rem !important;
+						margin-bottom: 20px !important;
+					}
+					.contact-grid-container form {
+						gap: 12px !important;
+						width: 100% !important;
+						box-sizing: border-box !important;
+					}
+					.contact-grid-container form > div {
+						width: 100% !important;
+						flex-direction: column !important;
+						gap: 12px !important;
+					}
+					.contact-grid-container form > div > div {
+						width: 100% !important;
+						min-width: 100% !important;
+						max-width: 100% !important;
+					}
+					.contact-grid-container form input,
+					.contact-grid-container form select,
+					.contact-grid-container form textarea {
+						padding: 12px !important;
+						font-size: 16px !important; /* Prevents auto-zoom on iOS */
+					}
+					.contact-hero {
+						padding: 60px 16px !important;
 					}
 					.contact-hero h1 {
 						font-size: 2.2rem !important;
 					}
 					.contact-hero p {
 						font-size: 1rem !important;
+					}
+					.contact-grid-container + section > div {
+						padding: 0 12px 24px 12px !important;
+					}
+					.contact-grid-container + section h2 {
+						font-size: 1.5rem !important;
+					}
+					.contact-grid-container + section p {
+						font-size: 0.95rem !important;
 					}
 				}
 			</style>
@@ -1133,6 +1221,6 @@ const a=JSON.parse(document.getElementById("wp-emoji-settings").textContent),o=(
 </script>
 
 <script defer src="/static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"70693cc87c6d477a87c0cc59c45e6b9a","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0158e1add36d4de',t:'MTc3OTcyMjc1MQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script defer src="/wp-content/themes/hello-elementor/assets/js/premium-ux.js"></script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0158e1add36d4de',t:'MTc3OTcyMjc1MQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script defer src="/wp-content/themes/hello-elementor/assets/js/premium-ux.js?v=15"></script>
 </body>
 </html>
