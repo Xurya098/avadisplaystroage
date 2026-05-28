@@ -2,15 +2,5 @@ node_modules/
 .DS_Store
 .env
 *.log
-
-# Local test configurations & Puppeteer output
-.chrome-user-data-debug-new/
+.vercel
 .chrome-user-data-debug/
-.chrome-user-data/
-capture-screenshots.js
-interactive-check.js
-test-responsive.js
-mobile_overflow_report.json
-*screenshots/
-*screenshots/
-
